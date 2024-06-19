@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import {
   Card,
   Col,
@@ -15,11 +15,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
-import { _ } from "gridjs-react";
 
 interface ProductlistProps {
   id: string;
 }
+
 const schema = yup
   .object({
     moddleNo: yup.string().required(),
@@ -27,145 +27,129 @@ const schema = yup
     heading: yup.string().required(),
     price: yup.string().required(),
     originalPrice: yup.string().required(),
-    // image: yup.string().required(),
     link: yup.string().required(),
   })
   .required();
+
+
+
 const Productlist: FC<ProductlistProps> = () => {
   const [product, setProduct] = useState([]);
-  const [characters, updateCharacters] = useState(product);
-  console.log("prodycut", product);
   const [show, setShow] = useState(false);
-  // console.log("product", product);
   const [xlShow, setXlShow] = useState(false);
-  const preset_key = "ngujniat";
-  const cloud_name = "dgmpifw8b";
-  const [image, setImage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
     fetchProducts();
   }, []);
-  //  token
+
   const token = localStorage.getItem("token");
-  // console.log(token);
   const config = {
     headers: {
       Authorization: token,
     },
   };
-  // get card api
+
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(
-        "https://doctorodinbackend.onrender.com/product",
-        config
-      );
-      // console.log("res", res);
+      const res = await axios.get("http://3.110.179.29:3008/api/urls", config);
+      console.log("res", res);
       setProduct(res?.data);
     } catch (error) {
-      console.error("error fetching products:", error);
+      console.error("error fetching pdf:", error);
+     
     }
   };
+
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    
   } = useForm({
     resolver: yupResolver(schema),
   });
-  function handleFile(e: any) {
-    const file = e.target.files[0];
-    console.log("file", file);
+
+  const handleFile = (e: any) => {
+    setFile(e.target.files[0]);
+  };
+
+  const formSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+
+    const currentDate = new Date();
+    const isoDate = currentDate.toISOString(); // Convert to ISO string
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", preset_key);
-    axios
-      .post(
-        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-        formData
-      )
-      .then((res) => setImage(res.data.secure_url))
-      // .then(res => console.log(res))
-      .catch((err) => console.log(err));
-  }
-  // create add api
-  const formSubmit = async (data: any) => {
-    data.image = image;
-    console.log("data", data);
+    formData.append("date", isoDate);
+
+    // { url, date }
+    // Get the current date
+
     try {
-      const res = await axios.post(
-        "https://doctorodinbackend.onrender.com/product",
-        data,
+      const s = await axios.post(
+        "http://3.110.179.29:3008/api/urls",
+        formData,
         config
       );
-      // console.log("data",data);
-      console.log("res", res);
+      console.log(s);
       fetchProducts();
       setXlShow(false);
+      setShow(false);
     } catch (error) {
-      console.log("error fetching products:", error);
+      console.log("error uploading pdf:", error);
     }
-    setShow(true);
+    setShow(false);
   };
-  // delete api
-  // const handleDelete = async (productId: string) => {
-  //   try {
-  //     await axios.delete(
-  //       `https://doctorodinbackend.onrender.com/product/${productId}`,
-  //       config
-  //     ).then(axios.get(
-  //       "https://doctorodinbackend.onrender.com/product",
-  //       config
-  //     );
-  //     // console.log("res", res);
 
-  //   } catch (error) {
-  //     console.error("Error deleting product:", error);
-  //   }
-  // };
   const handleDelete = async (productId: string) => {
     try {
       await axios.delete(
-        `https://doctorodinbackend.onrender.com/product/${productId}`,
+        `http://3.110.179.29:3008/api/urls/${productId}`,
         config
       );
-      const res = await axios.get(
-        "https://doctorodinbackend.onrender.com/product",
-        config
-      );
-      setProduct(res.data);
+      fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
     }
   };
-  // cloudinary image setup
 
   return (
     <Fragment>
       <Col>
-        <Card.Header className="d-flex align-items-center justify-content-between flex-wrap gap-3  p-3"></Card.Header>
+        <Card.Header className="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3"></Card.Header>
       </Col>
 
       <Col xl={12}>
         <Card className="custom-card">
-          <Card.Body className="">
+          {
+            user === "admin@gmail.com" &&(
+<Card.Body className="">
             <div className="d-flex align-items-center justify-content-between flex-wrap">
               <div className="d-flex flex-wrap gap-1">
-                <h1 className="fs-6 fw-bold">Product Addition</h1>
+                <h1 className="fs-6 fw-bold">Upload Pdf</h1>
               </div>
               <div className="col-sm-auto">
                 <div className="d-flex flex-sm-row">
-                  <button
-                    className="btn btn-primary btn-sm text-nowrap mt-2"
-                    type="submit"
-                    onClick={() => setXlShow(true)}
-                  >
-                    Create Card
-                  </button>
+                
+                    <button
+                      className="btn btn-primary btn-sm text-nowrap mt-2"
+                      type="submit"
+                      onClick={() => setXlShow(true)}
+                    >
+                      Upload
+                    </button>
+                
                 </div>
               </div>
             </div>
           </Card.Body>
+            )
+          }
+          
         </Card>
       </Col>
       <DragDropContext onDragEnd={() => {}}>
@@ -173,8 +157,8 @@ const Productlist: FC<ProductlistProps> = () => {
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {provided.placeholder}
-              <Row className="d-flex ">
-                {characters?.products?.map((product: any, index: number) => (
+              <Row className="d-flex">
+                {product?.map((product: any, index: number) => (
                   <Draggable
                     key={product._id}
                     draggableId={product._id}
@@ -188,65 +172,58 @@ const Productlist: FC<ProductlistProps> = () => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <div className=" h-100">
+                        <div className="h-100">
                           <Card key={index} className="custom-card h-100">
                             <Card.Body className="rounded-3 mt-3">
-                              <Dropdown className="d-flex justify-content-end">
-                                <Dropdown.Toggle
-                                  variant="light"
-                                  className="btn btn-icon btn-wave waves-light no-caret"
-                                  type="button"
-                                >
-                                  <i className="bi bi-three-dots-vertical text-primary fs-14 "></i>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                  <Dropdown.Item
-                                    href={`/editform/editform/${product?._id}`}
+                              {user === "admin@gmail.com" && (
+                                <Dropdown className="d-flex justify-content-end">
+                                  <Dropdown.Toggle
+                                    variant="light"
+                                    className="btn btn-icon btn-wave waves-light no-caret"
+                                    type="button"
                                   >
-                                    Edit
-                                  </Dropdown.Item>
-                                  <Dropdown.Item
-                                    href="#"
-                                    onClick={() => handleDelete(product._id)}
-                                  >
-                                    Delete
-                                  </Dropdown.Item>
-                                </Dropdown.Menu>
-                              </Dropdown>
+                                    <i className="bi bi-three-dots-vertical text-primary fs-14 "></i>
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      href="#"
+                                      onClick={() => handleDelete(product._id)}
+                                    >
+                                      Delete
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              )}
 
                               <img
-                                src={product?.image}
+                                src={
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png"
+                                }
                                 className="rounded mx-auto d-block"
                                 alt="..."
-                                style={{ maxWidth: "100%" }}
+                                style={{ maxWidth: "50%" }}
                               />
-                              <p className="d-flex justify-content-end product-description fs-13 text-muted ">
-                                {product.moddleNo}
-                              </p>
                             </Card.Body>
 
                             <Card.Footer>
-                              <span className="fs-14 fw-bold">
-                                {product.heading}
-                              </span>
-                              <p className="fs-14  text-primary fw-semibold mb-0 d-flex align-items-center">
-                                ₹ {product.price}
-                              </p>
                               <div className="d-flex justify-content-between">
-                                <span className="op-7 text-decoration-line-through">
-                                  MRP {product.originalPrice}
+                                <span className="fs-14 fw-bold mt-2">
+                                  {new Date(product.date).toLocaleDateString()}
                                 </span>
 
-                                <a
-                                  href={product.link}
-                                  className="btn btn-primary rounded-5"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    window.open(product.link, "_blank");
-                                  }}
-                                >
-                                  Buy Now
-                                </a>
+                                {product.url && (
+                                  <div className="mt-2">
+                                    <a
+                                      href={product.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="btn btn-sm btn-outline-danger"
+                                    >
+                                      <i className="bi bi-file-earmark-pdf-fill me-1"></i>
+                                      View PDF
+                                    </a>
+                                  </div>
+                                )}
                               </div>
                             </Card.Footer>
                           </Card>
@@ -270,146 +247,47 @@ const Productlist: FC<ProductlistProps> = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title as="h6" id="example-modal-sizes-title-sm">
-            Add your Content
+            Upload Pdf
           </Modal.Title>
         </Modal.Header>
-        <form onSubmit={handleSubmit(formSubmit)}>
+        <form onSubmit={formSubmit}>
           <Modal.Body>
             <Col xl={12}>
               <Card className="custom-card">
                 <Card.Body>
                   <Form.Label htmlFor="input-file" className="fs-14">
-                    Image Upload
+                    Upload Pdf
                   </Form.Label>
                   <Form.Control
                     type="file"
                     id="input-file"
-                    accept="image/jpeg ,image/png"
-                    // {...register("image", { required: true })}
+                    accept="application/pdf"
                     onChange={handleFile}
                   />
-                  {/* <img src={image} /> */}
-                  {/* <p className="text-danger ">{errors.image?.message}</p> */}
-
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Model Number
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    // name="photo"
-                    id="input-text"
-                    placeholder="Enter your model number"
-                    {...register("moddleNo", {
-                      required: true,
-                      maxLength: 20,
-                    })}
-                  />
-                  <p className="text-danger ">{errors.moddleNo?.message}</p>
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Name
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="input-text"
-                    placeholder="Enter your name"
-                    {...register("name", { required: true, maxLength: 20 })}
-                  />
-                  <p className="text-danger ">{errors.name?.message}</p>
-
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Heading
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="input-text"
-                    placeholder="Enter your heading"
-                    {...register("heading", { required: true, maxLength: 20 })}
-                  />
-                  <p className="text-danger ">{errors.heading?.message}</p>
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Price
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    id="input-text"
-                    placeholder="Enter your price"
-                    {...register("price", {
-                      required: true,
-                      minLength: 0,
-                      maxLength: 10,
-                    })}
-                  />
-                  <p className="text-danger ">{errors.price?.message}</p>
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Original Price
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    id="input-text"
-                    placeholder="Enter your original price"
-                    {...register("originalPrice", {
-                      required: true,
-                      minLength: 0,
-                      maxLength: 10,
-                    })}
-                  />
-                  <p className="text-danger ">
-                    {errors.originalPrice?.message}
-                  </p>
-                  <Form.Label htmlFor="input-text " className="mt-2 fs-14">
-                    Product Link
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="input-text"
-                    placeholder="Enter the product link"
-                    {...register("link", {
-                      required: true,
-                      maxLength: 30,
-                    })}
-                  />
-                  <p className="text-danger ">{errors.link?.message}</p>
                 </Card.Body>
               </Card>
             </Col>
           </Modal.Body>
           <Modal.Footer>
             <button
-              className="btn btn-primary btn-sm text-nowrap mt-2"
-              type="submit"
+              className="btn btn-secondary"
+              type="button"
+              onClick={() => setXlShow(false)}
             >
-              Add Product
+              Close
+            </button>
+            <button className="btn btn-primary" type="submit">
+              Upload
             </button>
           </Modal.Footer>
         </form>
       </Modal>
 
-      {show && (
-        <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
-          <Toast
-            onClose={() => setShow(false)}
-            show={show}
-            delay={5000}
-            autohide
-            bg="primary-transparent"
-            className="toast colored-toast"
-          >
-            <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
-              {/* <img
-                className="bd-placeholder-img rounded me-2"
-                src={favicon}
-                alt="..."
-              /> */}
-              <strong className="me-auto">Dr.Odin</strong>
-            </Toast.Header>
-            <Toast.Body>
-              {Object.keys(errors).length === 0
-                ? "Card Added Successfully!!"
-                : "Please fill required fields"}
-            </Toast.Body>
-          </Toast>
-        </ToastContainer>
-      )}
+      <ToastContainer position="top-end" className="p-3">
+        <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
+          <Toast.Body>Pdf uploaded successfully!</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Fragment>
   );
 };

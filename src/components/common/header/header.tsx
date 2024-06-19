@@ -40,7 +40,7 @@ import { ThemeChanger } from "../../../redux/action";
 // import googlesheets from "../../../assets/images/apps/google-sheets.png";
 // import store from "../../../redux/store";
 
-const Header = ({ local_varaiable, ThemeChanger }: any) => {
+const Header = () => {
   // for search modal
   const [show, setShow] = useState(false);
 
@@ -383,53 +383,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
   //   setCartItems(updatedCart);
   //   setCartItemCount(updatedCart.length);
   // };
-  const initialNotifications = [
-    {
-      id: 1,
-      avatarColor: "primary",
-      icon: "ti-gift",
-      text1: "Your Order Has Been Shipped",
-      text2: "Order No: 123456 Has Shipped To YourDelivery Address",
-      class: "",
-      class1: "",
-    },
-    {
-      id: 2,
-      avatarColor: "secondary",
-      icon: "ti-discount-2",
-      text1: "Discount Available",
-      text2: "Discount Available On Selected Products",
-      class: "",
-      class1: "",
-    },
-    {
-      id: 3,
-      avatarColor: "pink",
-      icon: "ti-user-check",
-      text1: "Account Has Been Verified",
-      text2: "Your Account Has Been Verified Successfully",
-      class: "",
-      class1: "",
-    },
-    {
-      id: 4,
-      avatarColor: "warning",
-      icon: "ti-circle-check",
-      text1: "Order Placed ",
-      text2: "Order Placed Successflly",
-      class: "text-warning",
-      class1: " ID:1116773",
-    },
-    {
-      id: 5,
-      avatarColor: "success",
-      icon: "ti-clock",
-      text1: "Order Delayed",
-      text2: "Order Delayed Unfortunately",
-      class: "text-success",
-      class1: " ID:7731116",
-    },
-  ];
+ 
 
   // const [notifications, setNotifications] = useState([...initialNotifications]);
 

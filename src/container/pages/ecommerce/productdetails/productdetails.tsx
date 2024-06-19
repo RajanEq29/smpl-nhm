@@ -51,7 +51,7 @@ const Productdetails: FC<ProductdetailsProps> = () => {
                 <Col xl={12} className="mt-xxl-0 mt-3">
                   <div className="row justify-content-center">
                     <Col xxl={12} xl={12} lg={12} sm={12} className="col-12">
-                      <Link to={"/productentry/productentry"}>
+                      <Link to={"/upload-pdf"}>
                         <div className="ecommerce-assurance">
                           <p className="mb-3">
                             <img src={group} className="" alt="..." />

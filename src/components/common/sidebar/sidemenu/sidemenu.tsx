@@ -1,33 +1,33 @@
 export const MENUITEMS = [
+  // {
+  //   menutitle: "DASHBOARD",
+  //   Items: [
+  //     {
+  //       icon: <i className="side-menu__icon bx bx-home"></i>,
+  //       type: "link",
+  //       Name: "",
+  //       active: false,
+  //       selected: false,
+  //       title: "Dashboards",
+  //       badge: "",
+  //       class: "badge bg-warning-transparent ms-2",
+  //       path: `${import.meta.env.BASE_URL}dashboards/crm`,
+  //     },
+  //   ],
+  // },
   {
-    menutitle: "DASHBOARD",
+    menutitle: "PDF",
     Items: [
       {
-        icon: <i className="side-menu__icon bx bx-home"></i>,
+        icon: <i className="side-menu__icon bi bi-filetype-pdf mb-2"></i>,
         type: "link",
         Name: "",
         active: false,
         selected: false,
-        title: "Dashboards",
+        title: "Pdf Uploader",
         badge: "",
         class: "badge bg-warning-transparent ms-2",
-        path: `${import.meta.env.BASE_URL}dashboards/crm`,
-      },
-    ],
-  },
-  {
-    menutitle: "PRODUCT CATALOG",
-    Items: [
-      {
-        icon: <i className="side-menu__icon bi bi-terminal-plus mb-2"></i>,
-        type: "link",
-        Name: "",
-        active: false,
-        selected: false,
-        title: "Product Catalog",
-        badge: "",
-        class: "badge bg-warning-transparent ms-2",
-        path: `${import.meta.env.BASE_URL}productentry/productentry`,    
+        path: `${import.meta.env.BASE_URL}upload-pdf`,    
         // children: [
         //   {   
         //     path: `${import.meta.env.BASE_URL}productdetails/productdetails`,
