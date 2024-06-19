@@ -53,7 +53,7 @@ const Productlist: FC<ProductlistProps> = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://3.110.179.29:3008/api/urls", config);
+      const res = await axios.get("https://smpl-pdf-list-node-backend.onrender.com/api/urls", config);
       console.log("res", res);
       setProduct(res?.data);
     } catch (error) {
@@ -91,7 +91,7 @@ const Productlist: FC<ProductlistProps> = () => {
 
     try {
       const s = await axios.post(
-        "http://3.110.179.29:3008/api/urls",
+        "https://smpl-pdf-list-node-backend.onrender.com/api/urls",
         formData,
         config
       );
@@ -108,7 +108,7 @@ const Productlist: FC<ProductlistProps> = () => {
   const handleDelete = async (productId: string) => {
     try {
       await axios.delete(
-        `http://3.110.179.29:3008/api/urls/${productId}`,
+        `https://smpl-pdf-list-node-backend.onrender.com/api/urls/${productId}`,
         config
       );
       fetchProducts();
