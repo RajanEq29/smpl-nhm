@@ -46,7 +46,7 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
     setLoader(true);
     try {
       const res = await axios.post(
-        "https://smpl-pdf-list-node-backend.onrender.com/api/users/login",
+        "https://backend.nhmdashboard.in/api/users/login",
         data
       );
       if (res.status === 200) {

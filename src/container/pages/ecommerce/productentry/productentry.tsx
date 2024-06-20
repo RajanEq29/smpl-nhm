@@ -56,7 +56,7 @@ const Productlist: FC<ProductlistProps> = () => {
     try {
       setLoadingData(true);
       const res = await axios.get(
-        "https://smpl-pdf-list-node-backend.onrender.com/api/urls",
+        "https://backend.nhmdashboard.in/api/urls",
         config
       );
 
@@ -96,7 +96,7 @@ const Productlist: FC<ProductlistProps> = () => {
 
     try {
       await axios.post(
-        "https://smpl-pdf-list-node-backend.onrender.com/api/urls",
+        "https://backend.nhmdashboard.in/api/urls",
         formData,
         config
       );
@@ -115,7 +115,7 @@ const Productlist: FC<ProductlistProps> = () => {
   const handleDelete = async (productId: string) => {
     try {
       await axios.delete(
-        `https://smpl-pdf-list-node-backend.onrender.com/api/urls/${productId}`,
+        `https://backend.nhmdashboard.in/api/urls/${productId}`,
         config
       );
       fetchProducts();
