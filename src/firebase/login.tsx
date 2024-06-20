@@ -29,6 +29,7 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
     email: "",
     password: "",
   });
+  const [loader, setLoader] = useState(false);
   const [name,setName]= useState("")
   const { email, password } = data;
   const changeHandler = (e: any) => {
@@ -42,6 +43,7 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
   };
 
   const handleLogin = async () => {
+    setLoader(true);
     try {
       const res = await axios.post(
         "https://smpl-pdf-list-node-backend.onrender.com/api/users/login",
@@ -51,6 +53,8 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
         const user = res?.data;
         console.log("ssss",user);
         setShow(true);
+        setLoader(false);
+
         localStorage.setItem("token", user?.token);
         localStorage.setItem("user", res?.data?.userData?.email);
         setName(res?.data?.userData?.email)
@@ -62,11 +66,13 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
         const errorData = res.data;
         setError(errorData.message);
         setShow(true);
+        setLoader(false);
       }
     } catch (error) {
       console.error("Error:", error);
       setError("Invalid Credentials!!");
       setShow(true);
+      setLoader(false);
     }
   };
 
@@ -185,7 +191,31 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
                           <div className="mt-2"></div>
                         </Col>
                         <Col xl={12} className="d-grid mt-2">
-                          <Button
+                        <button
+                        className=" border-0 bg-primary rounded-2 py-2 fw-semibold fs-6 text-fixed-white button"
+                        disabled={loader}
+                      >
+                        {loader ? (
+                          <button 
+                        
+                            className=" bg-primary border-0 bg-bluee text-fixed-white rounded-1 ms-2 px-4 fw-semibold fs-14"
+                            type="button"
+                            disabled
+                          >
+                            <span
+                              className="spinner-border spinner-border-sm mx-2 "
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Login...
+                          </button>
+                        ) : (
+                          <span className="ms-2 fs-15 fw-semibold"   onClick={() => {
+                            handleLogin();
+                          }}>Login</span>
+                        )}
+                      </button>
+                          {/* <Button
                             variant="primary"
                             onClick={() => {
                               handleLogin();
@@ -194,7 +224,7 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
                             className="btn"
                           >
                             Log in
-                          </Button>
+                          </Button> */}
                         </Col>
                       </div>
                       <div className="text-center"></div>
