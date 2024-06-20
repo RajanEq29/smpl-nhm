@@ -1,12 +1,8 @@
 import { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MENUITEMS } from './sidemenu/sidemenu';
-import logo1 from "../../../assets/images/brand-logos/desktop-logo.png";
-import logo2 from "../../../assets/images/brand-logos/toggle-logo.png";
-import logo3 from "../../../assets/images/brand-logos/desktop-dark.png";
-import logo4 from "../../../assets/images/brand-logos/toggle-dark.png";
-import logo5 from "../../../assets/images/brand-logos/desktop-white.png";
-import logo6 from "../../../assets/images/brand-logos/toggle-white.png";
+import logo1 from "../../../../public/NHM Logo.png";
+
 import RSC from "react-scrollbars-custom";
 import { connect } from 'react-redux';
 import { ThemeChanger } from "../../../redux/action";
@@ -468,16 +464,11 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
          <div id="responsive-overlay" onClick={() => menuClose()}></div>
       <aside className="app-sidebar sticky" id="sidebar" onMouseEnter={() => Onhover()}
         onMouseLeave={() => Outhover()} >
-        <div className="main-sidebar-header">
-          <Link to={`${import.meta.env.BASE_URL}dashboards/crm/`} className="header-logo">
-            <img src={logo1} alt="logo" className="desktop-logo" />
-            <img src={logo2} alt="logo" className="toggle-logo" />
-            <img src={logo3} alt="logo" className="desktop-dark" />
-            <img src={logo4} alt="logo" className="toggle-dark" />
-            <img src={logo5} alt="logo" className="desktop-white" />
-            <img src={logo6} alt="logo" className="toggle-white" />
-          </Link>
-        </div>
+      <div className="main-sidebar-header">
+  <img src={logo1} alt="logo" className="desktop-logo" style={{ width: "25%" }} />
+  <span className='text-white ms-2 fs-16' style={{  fontWeight: 'bold', fontFamily: 'Arial, sans-serif' }}>राष्ट्रीय स्वास्थ्य मिशन</span>
+</div>
+
 
         <div className="main-sidebar" id="sidebar-scroll">
 
