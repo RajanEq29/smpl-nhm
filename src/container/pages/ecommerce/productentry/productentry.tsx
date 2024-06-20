@@ -40,6 +40,7 @@ const Productlist: FC<ProductlistProps> = () => {
   const user = localStorage.getItem("user");
   const [loader, setLoader] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const [filterDate, setFilterDate] = useState<string | null>(null);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -58,7 +59,7 @@ const Productlist: FC<ProductlistProps> = () => {
         "https://smpl-pdf-list-node-backend.onrender.com/api/urls",
         config
       );
- 
+
       setProduct(res?.data);
       setLoadingData(false);
     } catch (error) {
@@ -94,7 +95,7 @@ const Productlist: FC<ProductlistProps> = () => {
     // Get the current date
 
     try {
-       await axios.post(
+      await axios.post(
         "https://smpl-pdf-list-node-backend.onrender.com/api/urls",
         formData,
         config
@@ -122,7 +123,14 @@ const Productlist: FC<ProductlistProps> = () => {
       console.error("Error deleting product:", error);
     }
   };
-
+  // Filter products by selected date
+  const filteredProducts = filterDate
+    ? product.filter(
+        (p: any) =>
+          new Date(p.date).toLocaleDateString() ===
+          new Date(filterDate).toLocaleDateString()
+      )
+    : product;
   return (
     <Fragment>
       <Col>
@@ -153,100 +161,120 @@ const Productlist: FC<ProductlistProps> = () => {
           )}
         </Card>
       </Col>
-      {loadingData ?  <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
-      <Spinner animation="border" role="status" className="text-primary">
-  <span className="visually-hidden">Loading...</span>
-</Spinner>
+      <Col>
+      <Card.Header className="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3">
+          <Card.Header className="flex-wrap gap-3 p-3 w-25">
+            <h1 className="fs-6 fw-bold">Search</h1>
+            <Form.Control 
+              type="date"
+              onChange={(e) => setFilterDate(e.target.value)}
+              value={filterDate ?? ""}
+              className="mb-3"
+            />
+        </Card.Header>
+        </Card.Header>
+      </Col>
+      {loadingData ? (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "80vh" }}
+        >
+          <Spinner animation="border" role="status" className="text-primary">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
+        <DragDropContext onDragEnd={() => {}}>
+          <Droppable droppableId="product-list">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {provided.placeholder}
+                <Row className="d-flex">
+                  {filteredProducts?.map((product: any, index: number) => (
+                    <Draggable
+                      key={product._id}
+                      draggableId={product._id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <Col
+                          xl={3}
+                          id="draggable-left"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div className="h-100">
+                            <Card key={index} className="custom-card h-100">
+                              <Card.Body className="rounded-3 mt-3">
+                                {user === "smplnhm@smplindia.com" && (
+                                  <Dropdown className="d-flex justify-content-end">
+                                    <Dropdown.Toggle
+                                      variant="light"
+                                      className="btn btn-icon btn-wave waves-light no-caret"
+                                      type="button"
+                                    >
+                                      <i className="bi bi-three-dots-vertical text-primary fs-14 "></i>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                      <Dropdown.Item
+                                        href="#"
+                                        onClick={() =>
+                                          handleDelete(product._id)
+                                        }
+                                      >
+                                        Delete
+                                      </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                  </Dropdown>
+                                )}
 
-        </div> :(
-  <DragDropContext onDragEnd={() => {}}>
-  <Droppable droppableId="product-list">
-    {(provided) => (
-      <div ref={provided.innerRef} {...provided.droppableProps}>
-        {provided.placeholder}
-        <Row className="d-flex">
-          {product?.map((product: any, index: number) => (
-            <Draggable
-              key={product._id}
-              draggableId={product._id}
-              index={index}
-            >
-              {(provided) => (
-                <Col
-                  xl={3}
-                  id="draggable-left"
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                >
-                  <div className="h-100">
-                    <Card key={index} className="custom-card h-100">
-                      <Card.Body className="rounded-3 mt-3">
-                        {user === "smplnhm@smplindia.com" && (
-                          <Dropdown className="d-flex justify-content-end">
-                            <Dropdown.Toggle
-                              variant="light"
-                              className="btn btn-icon btn-wave waves-light no-caret"
-                              type="button"
-                            >
-                              <i className="bi bi-three-dots-vertical text-primary fs-14 "></i>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                              <Dropdown.Item
-                                href="#"
-                                onClick={() => handleDelete(product._id)}
-                              >
-                                Delete
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        )}
+                                <img
+                                  src={
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png"
+                                  }
+                                  className="rounded mx-auto d-block"
+                                  alt="..."
+                                  style={{ maxWidth: "50%" }}
+                                />
+                              </Card.Body>
 
-                        <img
-                          src={
-                            "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1667px-PDF_file_icon.svg.png"
-                          }
-                          className="rounded mx-auto d-block"
-                          alt="..."
-                          style={{ maxWidth: "50%" }}
-                        />
-                      </Card.Body>
+                              <Card.Footer>
+                                <div className="d-flex justify-content-between">
+                                  <span className="fs-14 fw-bold mt-2">
+                                    {new Date(
+                                      product.date
+                                    ).toLocaleDateString()}
+                                  </span>
 
-                      <Card.Footer>
-                        <div className="d-flex justify-content-between">
-                          <span className="fs-14 fw-bold mt-2">
-                            {new Date(product.date).toLocaleDateString()}
-                          </span>
-
-                          {product.url && (
-                            <div className="mt-2">
-                              <a
-                                href={product.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-sm btn-outline-danger"
-                              >
-                                <i className="bi bi-file-earmark-pdf-fill me-1"></i>
-                                View PDF
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      </Card.Footer>
-                    </Card>
-                  </div>
-                </Col>
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </Row>
-      </div>
-    )}
-  </Droppable>
-</DragDropContext>
-        )}
-    
+                                  {product.url && (
+                                    <div className="mt-2">
+                                      <a
+                                        href={product.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn btn-sm btn-outline-danger"
+                                      >
+                                        <i className="bi bi-file-earmark-pdf-fill me-1"></i>
+                                        View PDF
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              </Card.Footer>
+                            </Card>
+                          </div>
+                        </Col>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </Row>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )}
 
       <Modal
         size="xl"
