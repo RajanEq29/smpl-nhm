@@ -191,7 +191,10 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
                           <div className="mt-2"></div>
                         </Col>
                         <Col xl={12} className="d-grid mt-2">
-                        <button
+                        <button 
+                         onClick={() => {
+                          handleLogin();
+                        }}
                         className=" border-0 bg-primary rounded-2 py-2 fw-semibold fs-6 text-fixed-white button"
                         disabled={loader}
                       >
@@ -210,9 +213,7 @@ const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
                             Login...
                           </button>
                         ) : (
-                          <span className="ms-2 fs-15 fw-semibold"   onClick={() => {
-                            handleLogin();
-                          }}>Login</span>
+                          <span className="ms-2 fs-15 fw-semibold">Login</span>
                         )}
                       </button>
                           {/* <Button
