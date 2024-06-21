@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface ProductlistProps {
   id: string;
@@ -41,6 +42,20 @@ const Productlist: FC<ProductlistProps> = () => {
   const [loader, setLoader] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [filterDate, setFilterDate] = useState<string | null>(null);
+  const navigate = useNavigate(); // Hook for navigation
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    // Redirect to homepage if user is not authenticated
+    if (!token || !user) {
+      navigate("/"); // Redirect to homepage
+    } else {
+    
+      fetchProducts();
+    }
+  }, [navigate]); // Added navigate as a dependency
   useEffect(() => {
     fetchProducts();
   }, []);
