@@ -35305,3 +35305,26 @@ a:hover {
 /* SWITCHER */
 
 /*# sourceMappingURL=styles.css.map */
+
+
+
+.input-table-container {
+  font-size: 12px;
+
+  border: none;
+  width: 91%;
+  padding: 8px 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* input:hover {
+  background-color: #fffaf3;
+}
+
+input:focus {
+  outline: 1px solid #ccc;
+  border: 1px solid #ccc;
+} */
+.px-5-date{
+  padding: 10px 100px;
+}

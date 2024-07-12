@@ -8,7 +8,7 @@ import Login from "./firebase/login.tsx";
 import Crm from "./container/dashboards/crm/crm.tsx";
 import Loader from "./components/common/loader/loader.tsx";
 import Productlist from "./container/pages/ecommerce/productentry/productentry.tsx";
-
+import { HourlyCall } from "./container/pages/ecommerce/Hourly/HourlyCall.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -31,15 +31,18 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               path={`${import.meta.env.BASE_URL}dashboards/crm`}
               element={<Crm />}
             />
-              {/* <Route
+            {/* <Route
               path={`${import.meta.env.BASE_URL}productdetails/productdetails`}
               element={<Productdetails />}
             /> */}
-              <Route
+            <Route
               path={`${import.meta.env.BASE_URL}upload-pdf`}
               element={<Productlist id={""} />}
             />
-            
+            <Route
+              path={`${import.meta.env.BASE_URL}hourly-call`}
+              element={<HourlyCall id={""} />}
+            />
           </Route>
         </Routes>
       </React.Suspense>
