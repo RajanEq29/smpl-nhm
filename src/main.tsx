@@ -9,6 +9,9 @@ import Crm from "./container/dashboards/crm/crm.tsx";
 import Loader from "./components/common/loader/loader.tsx";
 import Productlist from "./container/pages/ecommerce/productentry/productentry.tsx";
 import { HourlyCall } from "./container/pages/ecommerce/Hourly/HourlyCall.tsx";
+import Inboundcall from "./container/pages/InBoundcall/Inboundcall.tsx";
+import Districtreport from "./container/pages/DistrictCAll/Districtcall.tsx";
+import Disposition from "./container/pages/Disposition/Disposition.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -42,6 +45,18 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route
               path={`${import.meta.env.BASE_URL}hourly-call`}
               element={<HourlyCall id={""} />}
+            />
+            <Route
+              path={`${import.meta.env.BASE_URL}inboundcall`}
+              element={<Inboundcall />}
+            />
+            <Route
+              path={`${import.meta.env.BASE_URL}districtreport`}
+              element={<Districtreport />}
+            />
+            <Route
+              path={`${import.meta.env.BASE_URL}disposition`}
+              element={<Disposition />}
             />
           </Route>
         </Routes>
