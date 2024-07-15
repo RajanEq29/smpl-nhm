@@ -59,7 +59,9 @@ export const HourlyCall: React.FC = () => {
                       aria-labelledby="pricing-monthly"
                       tabIndex={0}
                     >
-                      <Daily />
+                      <div className="mx-2 my-2">
+                        <Daily />
+                      </div>
                     </Tab.Pane>
                     <Tab.Pane
                       eventKey="two"
@@ -69,7 +71,9 @@ export const HourlyCall: React.FC = () => {
                       aria-labelledby="pricing-yearly"
                       tabIndex={0}
                     >
-                      <Months />
+                      <div className="mx-2 my-2">
+                        <Months />
+                      </div>
                     </Tab.Pane>
                   </Tab.Content>
                 </Card.Body>
