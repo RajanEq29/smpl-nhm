@@ -50,9 +50,8 @@ const Productlist: FC<ProductlistProps> = () => {
 
     // Redirect to homepage if user is not authenticated
     if (!token || !user) {
-      navigate("/"); // Redirect to homepage
+      // navigate("/"); // Redirect to homepage
     } else {
-    
       fetchProducts();
     }
   }, [navigate]); // Added navigate as a dependency
@@ -177,16 +176,16 @@ const Productlist: FC<ProductlistProps> = () => {
         </Card>
       </Col>
       <Col>
-      <Card.Header className="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3">
+        <Card.Header className="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3">
           <Card.Header className="flex-wrap gap-3 p-3 w-25">
             <h1 className="fs-6 fw-bold">Search</h1>
-            <Form.Control 
+            <Form.Control
               type="date"
               onChange={(e) => setFilterDate(e.target.value)}
               value={filterDate ?? ""}
               className="mb-3"
             />
-        </Card.Header>
+          </Card.Header>
         </Card.Header>
       </Col>
       {loadingData ? (

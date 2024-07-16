@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, useRef } from "react";
 import { Button, Card, Col, Nav, Row, Tab, Table } from "react-bootstrap";
+import { useInboundcallApiMutation } from "../../../../../redux/Admin";
 
 type Props = {};
 interface Row {
@@ -31,6 +32,8 @@ const Daily = (props: Props) => {
   const imageFileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [isGraphFile, setIsGraphFile] = useState<boolean>(true);
+  const [AddDayData] = useInboundcallApiMutation();
+  // console.log("Inboundcall called with   ", data);
 
   const addRow = () => {
     setRows([
@@ -84,8 +87,14 @@ const Daily = (props: Props) => {
     }
   };
 
-  const savePDF = (row: Row) => {
+  const savePDF = async (row: Row) => {
     console.log("Saving row:", row);
+    try {
+      const response = await AddDayData(row).unwrap();
+      console.log("User created:", response);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   };
 
   const deleteLastRow = () => {

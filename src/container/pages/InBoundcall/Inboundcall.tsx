@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Button, Card, Col, Nav, Row, Tab } from "react-bootstrap";
+import { useInboundcallApiMutation } from "../../../redux/Admin";
 
 type CardData = {
   id: number;
@@ -10,6 +11,8 @@ type CardData = {
 const Inboundcall = () => {
   const [cards, setCards] = useState<CardData[]>([]);
   const fileInputRefs = useRef<HTMLInputElement[]>([]);
+  const { data } = useInboundcallApiMutation();
+  console.log("Inboundcall called with   ", data);
 
   const AddNewCard = () => {
     const newCard: CardData = {
