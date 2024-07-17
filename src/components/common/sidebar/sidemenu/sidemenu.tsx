@@ -1,20 +1,5 @@
+/* eslint-disable linebreak-style */
 export const MENUITEMS = [
-  // {
-  //   menutitle: "DASHBOARD",
-  //   Items: [
-  //     {
-  //       icon: <i className="side-menu__icon bx bx-home"></i>,
-  //       type: "link",
-  //       Name: "",
-  //       active: false,
-  //       selected: false,
-  //       title: "Dashboards",
-  //       badge: "",
-  //       class: "badge bg-warning-transparent ms-2",
-  //       path: `${import.meta.env.BASE_URL}dashboards/crm`,
-  //     },
-  //   ],
-  // },
   {
     menutitle: "PDF",
     Items: [
@@ -28,22 +13,6 @@ export const MENUITEMS = [
         badge: "",
         class: "badge bg-warning-transparent ms-2",
         path: `${import.meta.env.BASE_URL}upload-pdf`,
-        // children: [
-        //   {
-        //     path: `${import.meta.env.BASE_URL}productdetails/productdetails`,
-        //     title: "Add Product",
-        //     type: "link",
-        //     active: false,
-        //     selected: false,
-        //   },
-        //   {
-
-        //     title: "Product Addition",
-        //     type: "link",
-        //     active: false,
-        //     selected: false,
-        //   },
-        // ],
       },
       {
         icon: <i className="side-menu__icon bi bi-telephone-forward mb-2"></i>,
@@ -51,13 +20,9 @@ export const MENUITEMS = [
         Name: "",
         active: false,
         selected: false,
-
         badge: "",
-        // badgetxt: "12",
         class: "badge bg-warning-transparent ms-2",
-
-        title: "CallStatus-Inbound",
-
+        title: "Call Status-Inbound",
         path: `${import.meta.env.BASE_URL}hourly-call`,
       },
 
@@ -67,13 +32,9 @@ export const MENUITEMS = [
         Name: "",
         active: false,
         selected: false,
-
         badge: "",
-        // badgetxt: "12",
         class: "badge bg-warning-transparent ms-2",
-
-        title: "CallStatus-OutBound",
-
+        title: "Call Status-OutBound",
         path: `${import.meta.env.BASE_URL}inboundcall`,
       },
       {

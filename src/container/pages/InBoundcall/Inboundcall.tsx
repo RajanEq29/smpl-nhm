@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import React, { useRef, useState } from "react";
 import { Button, Card, Col, Nav, Row, Tab } from "react-bootstrap";
 import { useInboundcallApiMutation } from "../../../redux/Admin";

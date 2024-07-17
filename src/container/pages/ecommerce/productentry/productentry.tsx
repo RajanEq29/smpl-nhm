@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable react/jsx-key */
 import { FC, Fragment, useEffect, useState } from "react";
 import {
@@ -17,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { axiosGet } from "../../../../utils/ApiCall";
 
 interface ProductlistProps {
   id: string;
@@ -69,10 +71,7 @@ const Productlist: FC<ProductlistProps> = () => {
   const fetchProducts = async () => {
     try {
       setLoadingData(true);
-      const res = await axios.get(
-        "https://backend.nhmdashboard.in/api/urls",
-        config
-      );
+      const res = await axiosGet("urls");
 
       setProduct(res?.data);
       setLoadingData(false);

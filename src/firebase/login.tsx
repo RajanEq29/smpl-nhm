@@ -1,4 +1,4 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -11,107 +11,140 @@ import {
   ToastContainer,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { LocalStorageBackup } from "../components/common/switcher/switcherdata/switcherdata";
+import { ThemeChanger } from "../redux/action";
 import favicon from "../assets/images/brand-logos/favicon.ico";
-import { useAdminLoginUserMutation } from "../redux/Admin";
 
-interface LoginProps {
-  ThemeChanger: () => void;
-}
+import axios from "axios";
+import { axiosPost } from "../utils/ApiCall";
 
-const Login: FC<LoginProps> = ({ ThemeChanger }) => {
-  const [passwordShow, setPasswordShow] = useState(false);
-  const [isToastVisible, setToastVisible] = useState(false);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [loginAdmin] = useAdminLoginUserMutation();
-  const [loading, setLoading] = useState(false);
-  const [userName, setUserName] = useState("");
-  const navigate = useNavigate();
+interface LoginProps {}
 
-  const { email, password } = formData;
-
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+const Login: FC<LoginProps> = ({ ThemeChanger }: any) => {
+  const [passwordshow1, setpasswordshow1] = useState(false);
+  const [show, setShow] = useState(false);
+  const [err, setError] = useState("");
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+  const [loader, setLoader] = useState(false);
+  const [name, setName] = useState("");
+  const { email, password } = data;
+  const changeHandler = (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
     setError("");
+  };
+  const navigate = useNavigate();
+  const routeChange = () => {
+    const path = `${import.meta.env.BASE_URL}upload-pdf`;
+    navigate(path);
   };
 
   const handleLogin = async () => {
-    setLoading(true);
+    setLoader(true);
     try {
-      const response: any = await loginAdmin(formData);
-      console.log("Login response: ", response);
+      const res = await axiosPost("users/login", data);
+      if (res.status === 200) {
+        const user = res?.data;
+        console.log("ssss", user);
+        setShow(true);
+        setLoader(false);
 
-      if (response?.data?.token) {
-        setToastVisible(true);
-        // navigate("upload-pdf");
-        setUserName(response.data.userData.name);
-        const token = response.data.token;
-        if (token) {
-          localStorage.setItem("token", token);
-          setTimeout(() => navigate("upload-pdf"), 1000);
-        }
+        localStorage.setItem("token", user?.token);
+        localStorage.setItem("user", res?.data?.userData?.email);
+        setName(res?.data?.userData?.email);
+        console.log(res);
+        setTimeout(() => {
+          routeChange();
+        }, 1000);
       } else {
-        console.error("API error: ", response);
-        setError(response?.error?.data?.message || "Login failed");
+        const errorData = res.data;
+        setError(errorData.message);
+        setShow(true);
+        setLoader(false);
       }
-    } catch (err) {
-      console.error("Login error: ", err);
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Invalid Credentials!!");
+      setShow(true);
+      setLoader(false);
     }
   };
 
+  useEffect(() => {
+    LocalStorageBackup(ThemeChanger);
+  }, []);
+
   return (
     <Fragment>
-      {isToastVisible && (
-        <ToastContainer className="position-fixed top-0 end-0 me-4 mt-4">
-          <Toast
-            onClose={() => setToastVisible(false)}
-            show={isToastVisible}
-            delay={5000}
-            autohide
-            bg="primary-transparent"
-            className="colored-toast"
-          >
-            <Toast.Header className="bg-primary text-fixed-white mb-0">
-              <img
-                className="bd-placeholder-img rounded me-2"
-                src={favicon}
-                alt="..."
-              />
-              <strong className="me-auto">{userName}</strong>
-            </Toast.Header>
-            <Toast.Body>
-              {error ? error : "Successfully Logged In!!"}
-            </Toast.Body>
-          </Toast>
-        </ToastContainer>
-      )}
+      <div>
+        {show && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                />
+                <strong className="me-auto">{name}</strong>
+              </Toast.Header>
+              <Toast.Body>{err ? err : "Successfully Logged In!!"}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
 
       <div className="container">
         <div className="row justify-content-center align-items-center authentication authentication-basic h-100">
           <Col xxl={4} xl={5} lg={5} md={6} sm={8} className="col-12">
             <Tab.Container id="left-tabs-example" defaultActiveKey="react">
               <Card>
+                {/* <Nav
+                  variant="pills"
+                  className="justify-content-center authentication-tabs"
+                >
+                  <Nav.Item>
+                    <Nav.Link eventKey="react">
+                      <img src={react} alt="logo2" />
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link eventKey="firebase">
+                      {" "}
+                      <img src={firebase} alt="logo1" />
+                    </Nav.Link>
+                  </Nav.Item>
+                </Nav> */}
                 <Tab.Content>
                   <Tab.Pane eventKey="react" className="border-0 pb-2">
                     <div className="p-4">
                       <p className="h5 fw-semibold mb-2 text-center">Sign In</p>
+
                       <div className="row gy-3">
-                        {error && <Alert variant="danger">{error}</Alert>}
+                        {err && <Alert variant="danger">{err}</Alert>}
                         <Col xl={12}>
                           <Form.Label
-                            htmlFor="signin-email"
+                            htmlFor="signin-username"
                             className="form-label text-default"
                           >
                             Email
                           </Form.Label>
                           <Form.Control
                             size="lg"
+                            className=""
                             placeholder="Enter your email"
                             name="email"
-                            type="email"
+                            type="text"
                             value={email}
                             onChange={changeHandler}
                             required
@@ -127,21 +160,24 @@ const Login: FC<LoginProps> = ({ ThemeChanger }) => {
                           <InputGroup>
                             <Form.Control
                               size="lg"
+                              className="form-control"
                               placeholder="Enter your password"
                               name="password"
-                              type={passwordShow ? "text" : "password"}
+                              type={passwordshow1 ? "text" : "password"}
                               value={password}
                               onChange={changeHandler}
                               required
                             />
                             <Button
                               variant="light"
+                              className="btn btn-light"
                               type="button"
-                              onClick={() => setPasswordShow(!passwordShow)}
+                              onClick={() => setpasswordshow1(!passwordshow1)}
+                              id="button-addon2"
                             >
                               <i
                                 className={`${
-                                  passwordShow
+                                  passwordshow1
                                     ? "ri-eye-line"
                                     : "ri-eye-off-line"
                                 } align-middle`}
@@ -149,28 +185,48 @@ const Login: FC<LoginProps> = ({ ThemeChanger }) => {
                               ></i>
                             </Button>
                           </InputGroup>
+                          <div className="mt-2"></div>
                         </Col>
                         <Col xl={12} className="d-grid mt-2">
-                          <Button
-                            onClick={handleLogin}
-                            className="bg-primary rounded-2 py-2 fw-semibold fs-6 text-fixed-white border-0"
-                            disabled={loading}
+                          <button
+                            onClick={() => {
+                              handleLogin();
+                            }}
+                            className=" border-0 bg-primary rounded-2 py-2 fw-semibold fs-6 text-fixed-white button"
+                            disabled={loader}
                           >
-                            {loading ? (
-                              <>
+                            {loader ? (
+                              <button
+                                className=" bg-primary border-0 bg-bluee text-fixed-white rounded-1 ms-2 px-4 fw-semibold fs-14"
+                                type="button"
+                                disabled
+                              >
                                 <span
-                                  className="spinner-border spinner-border-sm mx-2"
+                                  className="spinner-border spinner-border-sm mx-2 "
                                   role="status"
                                   aria-hidden="true"
                                 ></span>
-                                Logging in...
-                              </>
+                                Login...
+                              </button>
                             ) : (
-                              "Login"
+                              <span className="ms-2 fs-15 fw-semibold">
+                                Login
+                              </span>
                             )}
-                          </Button>
+                          </button>
+                          {/* <Button
+                            variant="primary"
+                            onClick={() => {
+                              handleLogin();
+                            }}
+                            size="lg"
+                            className="btn"
+                          >
+                            Log in
+                          </Button> */}
                         </Col>
                       </div>
+                      <div className="text-center"></div>
                     </div>
                   </Tab.Pane>
                 </Tab.Content>
@@ -183,4 +239,8 @@ const Login: FC<LoginProps> = ({ ThemeChanger }) => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state: any) => ({
+  local_varaiable: state,
+});
+
+export default connect(mapStateToProps, { ThemeChanger })(Login);

@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import React, { useState, ChangeEvent, useRef } from "react";
 import { Button, Card, Col, Nav, Row, Tab, Table } from "react-bootstrap";
 import Daily from "./Daily/Daily";

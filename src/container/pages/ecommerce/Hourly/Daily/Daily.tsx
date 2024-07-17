@@ -1,38 +1,19 @@
 import React, { useState, ChangeEvent, useRef } from "react";
 import { Button, Card, Col, Nav, Row, Tab, Table } from "react-bootstrap";
 import { useInboundcallApiMutation } from "../../../../../redux/Admin";
+import { useForm } from "react-hook-form";
+import { axiosPost } from "../../../../../utils/ApiCall";
+import axios from "axios";
 
 type Props = {};
-interface Row {
-  id: number;
-  timeInterval: string;
-  totalCalls: string;
-  overallAnswered: string;
-  overallAbandoned: string;
-  answeredPercent: string;
-  acht: string;
-  graphFile?: File;
-  imageFile?: File;
-}
 
 const Daily = (props: Props) => {
   const [rows, setRows] = useState<Row[]>([
     {
       id: 1,
-      timeInterval: "",
-      totalCalls: "",
-      overallAnswered: "",
-      overallAbandoned: "",
-      answeredPercent: "",
-      acht: "",
     },
   ]);
 
-  const graphFileInputRef = useRef<HTMLInputElement | null>(null);
-  const imageFileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
-  const [isGraphFile, setIsGraphFile] = useState<boolean>(true);
-  const [AddDayData] = useInboundcallApiMutation();
   // console.log("Inboundcall called with   ", data);
 
   const addRow = () => {
@@ -40,62 +21,19 @@ const Daily = (props: Props) => {
       ...rows,
       {
         id: rows.length + 1,
-        timeInterval: "",
-        totalCalls: "",
-        overallAnswered: "",
-        overallAbandoned: "",
-        answeredPercent: "",
-        acht: "",
       },
     ]);
   };
 
-  const handleInputChange = (
-    index: number,
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = event.target;
-    const newRows = rows.map((row, rowIndex) =>
-      rowIndex === index ? { ...row, [name]: value } : row
-    );
-    setRows(newRows);
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && selectedRowId !== null) {
-      const newRows = rows.map((row) => {
-        if (row.id === selectedRowId) {
-          return isGraphFile
-            ? { ...row, graphFile: file }
-            : { ...row, imageFile: file };
-        }
-        return row;
-      });
-      setRows(newRows);
-      console.log("Selected file:", file);
-    }
-  };
-
-  const handleFileButtonClick = (rowId: number, isGraph: boolean) => {
-    setSelectedRowId(rowId);
-    setIsGraphFile(isGraph);
-    if (isGraph && graphFileInputRef.current) {
-      graphFileInputRef.current.click();
-    } else if (!isGraph && imageFileInputRef.current) {
-      imageFileInputRef.current.click();
-    }
-  };
-
-  const savePDF = async (row: Row) => {
-    console.log("Saving row:", row);
-    try {
-      const response = await AddDayData(row).unwrap();
-      console.log("User created:", response);
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
-  };
+  // const savePDF = async (row: Row) => {
+  //   console.log("Saving row:", row);
+  //   try {
+  //     const response = await AddDayData(row).unwrap();
+  //     console.log("User created:", response);
+  //   } catch (error) {
+  //     console.error("Error creating user:", error);
+  //   }
+  // };
 
   const deleteLastRow = () => {
     if (rows.length > 1) {
@@ -118,6 +56,46 @@ const Daily = (props: Props) => {
     newRows[index].isEditing = false;
     setRows(newRows);
   };
+  const [selectedImage, setSelectedImage] = useState(null);
+  // const [responseMessage, setResponseMessage] = useState("");
+  const [selectedImage1, setSelectedImage1] = useState(null);
+  const handleImageChange = (event) => {
+    setSelectedImage(event.target.files[0]);
+  };
+  const handleImageChange1 = (event) => {
+    setSelectedImage1(event.target.files[0]);
+  };
+  const { register, handleSubmit } = useForm<FormData>();
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      if (!selectedImage) {
+        console.error("Please select an image.");
+        return;
+      }
+      if (!selectedImage) {
+        console.error("Please select an image.");
+        return;
+      }
+      data.type = "monthly";
+      console.log("ABAHAYA", data);
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      formData.append("image", selectedImage);
+      // data.append();
+
+      const response = await axiosPost(
+        "callStatus/addCallStatus",
+        formData,
+        {}
+      );
+
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error submitting form data:", error?.response?.data);
+    }
+  };
 
   return (
     <>
@@ -128,109 +106,115 @@ const Daily = (props: Props) => {
             <Button onClick={addRow}>+Add</Button>
           </div>
         </div>
-
-        <Table
-          bordered
-          className="table text-nowrap border-success border-round"
-        >
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Time Interval</th>
-              <th>TOTAL CALLS</th>
-              <th>Overall Answered</th>
-              <th>Overall Abandoned</th>
-              <th>Answered %</th>
-              <th>ACHT</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, index) => (
-              <tr key={row.id}>
-                <td>{row.id}</td>
-                <td>
-                  <input
-                    className="input-table-container"
-                    name="timeInterval"
-                    type="date"
-                    value={row.timeInterval}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="input-table-container"
-                    name="totalCalls"
-                    type="text"
-                    value={row.totalCalls}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="input-table-container"
-                    name="overallAnswered"
-                    type="text"
-                    value={row.overallAnswered}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="input-table-container"
-                    name="overallAbandoned"
-                    type="text"
-                    value={row.overallAbandoned}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="input-table-container"
-                    name="answeredPercent"
-                    type="text"
-                    value={row.answeredPercent}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                </td>
-                <td className="d-flex gap-2">
-                  <Button onClick={() => handleFileButtonClick(row.id, true)}>
-                    Graph
-                  </Button>
-                  <Button onClick={() => handleFileButtonClick(row.id, false)}>
-                    Image
-                  </Button>
-                </td>
-                <td className="">
-                  <Button onClick={() => savePDF(row)} className="mx-1">
-                    Save
-                  </Button>
-                  <Button onClick={() => deleteRow(row.id)}>Delete</Button>
-                  <Button onClick={() => editRow(row.id)} className="mx-1">
-                    {row?.isEditing ? "Cancel" : "Edit"}
-                  </Button>
-                  {row?.isEditing && (
-                    <Button onClick={() => updateTable(index)}>Update</Button>
-                  )}
-                </td>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Table
+            bordered
+            className="table text-nowrap border-success border-round"
+          >
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Time Interval</th>
+                <th>TOTAL CALLS</th>
+                <th>Overall Answered</th>
+                <th>Overall Abandoned</th>
+                <th>Answered %</th>
+                <th>ACHT</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => (
+                <tr key={row.id}>
+                  <td>{row.id}</td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      name=" date"
+                      type="date"
+                      {...register("date")}
+                      value={row.date}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      name="totalCalls"
+                      type="text"
+                      {...register("totalCalls")}
+                      value={row.totalCalls}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      name="overAllAnswered"
+                      type="text"
+                      {...register("overAllAnswered")}
+                      value={row.overAllAnswered}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      name="overAllAbandoned"
+                      type="text"
+                      {...register("overAllAbandoned")}
+                      value={row.overAllAbandoned}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      name="answeredPercentage"
+                      type="text"
+                      {...register("answeredPercentage")}
+                      value={row.answeredPercentage}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td className="d-flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: "none" }}
+                      id="upload-image-input"
+                    />
+                    <label htmlFor="upload-image-input">
+                      <Button as="span">Graph</Button>
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange1}
+                      style={{ display: "none" }}
+                      id="upload-image-input"
+                    />
+                    <Button>Image</Button>
+                  </td>
+                  <td className="">
+                    <Button type="submit" className="mx-1">
+                      Submit
+                    </Button>
+                    <Button onClick={() => deleteRow(row.id)}>Delete</Button>
+                    <Button onClick={() => editRow(row.id)} className="mx-1">
+                      {row?.isEditing ? "Cancel" : "Edit"}
+                    </Button>
+                    {row?.isEditing && (
+                      <Button onClick={() => updateTable(index)}>Update</Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </form>
       </Card>
-      <input
-        type="file"
-        ref={graphFileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-      <input
-        type="file"
-        ref={imageFileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
     </>
   );
 };

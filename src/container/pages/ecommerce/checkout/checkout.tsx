@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { FC, Fragment } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import Pageheader from "../../../../components/pageheader/pageheader";

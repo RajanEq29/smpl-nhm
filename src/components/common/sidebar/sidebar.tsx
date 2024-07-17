@@ -1,12 +1,13 @@
-import { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { MENUITEMS } from './sidemenu/sidemenu';
+/* eslint-disable linebreak-style */
+import { Fragment, useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { MENUITEMS } from "./sidemenu/sidemenu";
 import logo1 from "../../../../public/NHM Logo.png";
 
 import RSC from "react-scrollbars-custom";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { ThemeChanger } from "../../../redux/action";
-import store from '../../../redux/store';
+import store from "../../../redux/store";
 const history: any = [];
 
 const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
@@ -28,18 +29,23 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     return () => {
       mainContent!.removeEventListener("click", mainContentClickFn);
     };
-
   }, [location, mainContentClickFn]);
 
   // location
   useEffect(() => {
-    if (document.body.classList.contains('horizontal') && window.innerWidth >= 992) {
+    if (
+      document.body.classList.contains("horizontal") &&
+      window.innerWidth >= 992
+    ) {
       clearMenuActive();
     }
   }, []);
   //  In Horizontal When we click the body it should we Closed using in useEfffect Refer line No:16
   function mainContentClickFn() {
-    if (document.body.classList.contains('horizontal') && window.innerWidth >= 992) {
+    if (
+      document.body.classList.contains("horizontal") &&
+      window.innerWidth >= 992
+    ) {
       clearMenuActive();
     }
   }
@@ -76,11 +82,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
       !document.body.classList.contains("horizontal-hover") ||
       window.innerWidth < 992
     ) {
-
       if (!item.active) {
         MENUITEMS.map((mainlevel) => {
           if (mainlevel.Items) {
-            mainlevel.Items.map(sublevel => {
+            mainlevel.Items.map((sublevel) => {
               sublevel.active = false;
               if (item === sublevel) {
                 sublevel.active = true;
@@ -123,9 +128,8 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           }
           return mainlevel;
         });
-      }
-      else {
-        if (localStorage.ynexverticalstyles != 'doublemenu') {
+      } else {
+        if (localStorage.ynexverticalstyles != "doublemenu") {
           item.active = !item.active;
         }
         // item.active = !item.active;
@@ -137,26 +141,34 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
 
   function Onhover() {
     const theme = store.getState();
-    if ((theme.toggled == 'icon-overlay-close' || theme.toggled == 'detached-close') && theme.iconOverlay != 'open') {
-      ThemeChanger({ ...theme, "iconOverlay": "open" });
+    if (
+      (theme.toggled == "icon-overlay-close" ||
+        theme.toggled == "detached-close") &&
+      theme.iconOverlay != "open"
+    ) {
+      ThemeChanger({ ...theme, iconOverlay: "open" });
     }
   }
   function Outhover() {
     const theme = store.getState();
-    if ((theme.toggled == 'icon-overlay-close' || theme.toggled == 'detached-close') && theme.iconOverlay == 'open') {
-      ThemeChanger({ ...theme, "iconOverlay": "" });
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", theme);
+    if (
+      (theme.toggled == "icon-overlay-close" ||
+        theme.toggled == "detached-close") &&
+      theme.iconOverlay == "open"
+    ) {
+      ThemeChanger({ ...theme, iconOverlay: "" });
     }
   }
   function Clickhandelar() {
     if (localStorage.getItem("ynexverticalstyles") == "icontext") {
-      ThemeChanger({ ...local_varaiable, "iconText": "open" });
+      ThemeChanger({ ...local_varaiable, iconText: "open" });
     }
-
   }
   function menuClose() {
     const theme = store.getState();
     if (window.innerWidth <= 992) {
-      ThemeChanger({ ...theme, toggled: 'close' });
+      ThemeChanger({ ...theme, toggled: "close" });
     }
     const overlayElement = document.querySelector("#responsive-overlay");
     if (overlayElement) {
@@ -164,7 +176,6 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     }
   }
   useEffect(() => {
-
     const mainContent = document.querySelector(".main-content");
     if (window.innerWidth <= 992) {
       if (mainContent) {
@@ -195,22 +206,23 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   }, []);
 
   function setSidemenu(list?: any) {
-
-    let dd = list ? list.path + '/' : location.pathname;
+    let dd = list ? list.path + "/" : location.pathname;
     if (menuitems) {
       menuitems.filter((mainlevel: any) => {
         if (mainlevel.Items) {
           mainlevel.Items.filter((items: any) => {
-            
-            if (ulRef.current.href != document.location['href'] || localStorage.ynexverticalstyles != 'doublemenu') {
+            if (
+              ulRef.current.href != document.location["href"] ||
+              localStorage.ynexverticalstyles != "doublemenu"
+            ) {
               items.active = false;
             }
             items.selected = false;
 
-            if (dd === '/test/ynex-ts/preview') {
-              dd = '/dashboards/crm/';
+            if (dd === "/test/ynex-ts/preview") {
+              dd = "/dashboards/crm/";
             }
-            if (dd === items.path + '/') {
+            if (dd === items.path + "/") {
               items.active = true;
               items.selected = true;
             }
@@ -218,9 +230,13 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               items.children.filter((submenu: any) => {
                 submenu.active = false;
                 submenu.selected = false;
-                if (dd === submenu.path + '/') {
+                if (dd === submenu.path + "/") {
                   const theme = store.getState();
-                  items.active = theme.dataNavLayout == 'horizontal' || theme.dataNavStyle == 'icon-hover' ? false : true;
+                  items.active =
+                    theme.dataNavLayout == "horizontal" ||
+                    theme.dataNavStyle == "icon-hover"
+                      ? false
+                      : true;
                   items.selected = true;
                   submenu.active = true;
                   submenu.selected = true;
@@ -233,7 +249,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
                   submenu.children.filter((submenu1: any) => {
                     submenu1.active = false;
                     submenu1.selected = false;
-                    if (dd === submenu1.path + '/') {
+                    if (dd === submenu1.path + "/") {
                       items.active = true;
                       items.selected = true;
                       submenu.active = true;
@@ -268,7 +284,6 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   }
 
   function switcherArrowFn(): void {
-
     // Used to remove is-expanded class and remove class on clicking arrow buttons
     function slideClick(): void {
       const slide = document.querySelectorAll<HTMLElement>(".slide");
@@ -297,7 +312,9 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
 
     if (menuNav && mainContainer1) {
       const marginLeftValue = Math.ceil(
-        Number(window.getComputedStyle(menuNav).marginInlineStart.split("px")[0])
+        Number(
+          window.getComputedStyle(menuNav).marginInlineStart.split("px")[0]
+        )
       );
       const marginRightValue = Math.ceil(
         Number(window.getComputedStyle(menuNav).marginInlineEnd.split("px")[0])
@@ -310,20 +327,27 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           if (Math.abs(check) > Math.abs(marginLeftValue)) {
             menuNav.style.marginInlineEnd = "0";
 
-            if (!(Math.abs(check) > Math.abs(marginLeftValue) + mainContainer1Width)) {
+            if (
+              !(
+                Math.abs(check) >
+                Math.abs(marginLeftValue) + mainContainer1Width
+              )
+            ) {
               mainContainer1Width = Math.abs(check) - Math.abs(marginLeftValue);
-              const slideRightButton = document.querySelector<HTMLElement>("#slide-right");
+              const slideRightButton =
+                document.querySelector<HTMLElement>("#slide-right");
               if (slideRightButton) {
                 slideRightButton.classList.add("hidden");
               }
             }
 
             menuNav.style.marginInlineStart =
-              (Number(menuNav.style.marginInlineStart.split("px")[0]) -
-                Math.abs(mainContainer1Width)) +
+              Number(menuNav.style.marginInlineStart.split("px")[0]) -
+              Math.abs(mainContainer1Width) +
               "px";
 
-            const slideRightButton = document.querySelector<HTMLElement>("#slide-right");
+            const slideRightButton =
+              document.querySelector<HTMLElement>("#slide-right");
             if (slideRightButton) {
               slideRightButton.classList.remove("hidden");
             }
@@ -332,20 +356,28 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           if (Math.abs(check) > Math.abs(marginRightValue)) {
             menuNav.style.marginInlineStart = "0";
 
-            if (!(Math.abs(check) > Math.abs(marginRightValue) + mainContainer1Width)) {
-              mainContainer1Width = Math.abs(check) - Math.abs(marginRightValue);
-              const slideRightButton = document.querySelector<HTMLElement>("#slide-right");
+            if (
+              !(
+                Math.abs(check) >
+                Math.abs(marginRightValue) + mainContainer1Width
+              )
+            ) {
+              mainContainer1Width =
+                Math.abs(check) - Math.abs(marginRightValue);
+              const slideRightButton =
+                document.querySelector<HTMLElement>("#slide-right");
               if (slideRightButton) {
                 slideRightButton.classList.add("hidden");
               }
             }
 
             menuNav.style.marginInlineEnd =
-              (Number(menuNav.style.marginInlineEnd.split("px")[0]) -
-                Math.abs(mainContainer1Width)) +
+              Number(menuNav.style.marginInlineEnd.split("px")[0]) -
+              Math.abs(mainContainer1Width) +
               "px";
 
-            const slideLeftButton = document.querySelector<HTMLElement>("#slide-left");
+            const slideLeftButton =
+              document.querySelector<HTMLElement>("#slide-left");
             if (slideLeftButton) {
               slideLeftButton.classList.remove("hidden");
             }
@@ -353,8 +385,12 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
         }
       }
 
-      const element = document.querySelector<HTMLElement>(".main-menu > .slide.open");
-      const element1 = document.querySelector<HTMLElement>(".main-menu > .slide.open > ul");
+      const element = document.querySelector<HTMLElement>(
+        ".main-menu > .slide.open"
+      );
+      const element1 = document.querySelector<HTMLElement>(
+        ".main-menu > .slide.open > ul"
+      );
       if (element) {
         element.classList.remove("active");
       }
@@ -372,7 +408,9 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
 
     if (menuNav && mainContainer1) {
       const marginLeftValue = Math.ceil(
-        Number(window.getComputedStyle(menuNav).marginInlineStart.split("px")[0])
+        Number(
+          window.getComputedStyle(menuNav).marginInlineStart.split("px")[0]
+        )
       );
       const marginRightValue = Math.ceil(
         Number(window.getComputedStyle(menuNav).marginInlineEnd.split("px")[0])
@@ -389,20 +427,28 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           if (Math.abs(check) > Math.abs(marginRightValue)) {
             menuNav.style.marginInlineStart = "0";
 
-            if (!(Math.abs(check) > Math.abs(marginRightValue) + mainContainer1Width)) {
-              mainContainer1Width = Math.abs(check) - Math.abs(marginRightValue);
-              const slideRightButton = document.querySelector<HTMLElement>("#slide-right");
+            if (
+              !(
+                Math.abs(check) >
+                Math.abs(marginRightValue) + mainContainer1Width
+              )
+            ) {
+              mainContainer1Width =
+                Math.abs(check) - Math.abs(marginRightValue);
+              const slideRightButton =
+                document.querySelector<HTMLElement>("#slide-right");
               if (slideRightButton) {
                 slideRightButton.classList.add("hidden");
               }
             }
 
             menuNav.style.marginInlineEnd =
-              (Number(menuNav.style.marginInlineEnd.split("px")[0]) -
-                Math.abs(mainContainer1Width)) +
+              Number(menuNav.style.marginInlineEnd.split("px")[0]) -
+              Math.abs(mainContainer1Width) +
               "px";
 
-            const slideLeftButton = document.querySelector<HTMLElement>("#slide-left");
+            const slideLeftButton =
+              document.querySelector<HTMLElement>("#slide-left");
             if (slideLeftButton) {
               slideLeftButton.classList.remove("hidden");
             }
@@ -410,8 +456,12 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
         }
       }
 
-      const element = document.querySelector<HTMLElement>(".main-menu > .slide.open");
-      const element1 = document.querySelector<HTMLElement>(".main-menu > .slide.open > ul");
+      const element = document.querySelector<HTMLElement>(
+        ".main-menu > .slide.open"
+      );
+      const element1 = document.querySelector<HTMLElement>(
+        ".main-menu > .slide.open > ul"
+      );
       if (element) {
         element.classList.remove("active");
       }
@@ -423,9 +473,9 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     switcherArrowFn();
   }
   const noChild = () => {
-    if (localStorage.ynexverticalstyles == 'doublemenu') {
+    if (localStorage.ynexverticalstyles == "doublemenu") {
       const theme = store.getState();
-      ThemeChanger({ ...theme, "toggled": "double-menu-close" });
+      ThemeChanger({ ...theme, toggled: "double-menu-close" });
     }
   };
 
@@ -433,7 +483,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   const ulElement = useRef(null);
 
   useEffect(() => {
-    if (localStorage.ynexverticalstyles != 'overlay' && localStorage.ynexverticalstyles != "detached") {
+    if (
+      localStorage.ynexverticalstyles != "overlay" &&
+      localStorage.ynexverticalstyles != "detached"
+    ) {
       setSidemenu();
     }
   }, []);
@@ -442,60 +495,104 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     // console.log("Working");
     const MainContent = document.querySelector(".main-content");
 
-    if (local_varaiable.dataVerticalStyle === 'icontext' && local_varaiable.iconText !== 'open') {
+    if (
+      local_varaiable.dataVerticalStyle === "icontext" &&
+      local_varaiable.iconText !== "open"
+    ) {
       const theme = store.getState();
-      ThemeChanger({ ...theme, "iconText": "open" });
+      ThemeChanger({ ...theme, iconText: "open" });
 
       MainContent?.addEventListener("click", (_event) => {
         const theme = store.getState();
-        ThemeChanger({ ...theme, "iconText": "" });
+        ThemeChanger({ ...theme, iconText: "" });
       });
     }
 
     const theme = store.getState();
-    if (localStorage.ynexverticalstyles === 'doublemenu' && theme.toggled !== 'double-menu-open') {
-      ThemeChanger({ ...theme, "toggled": "double-menu-open" });
+    if (
+      localStorage.ynexverticalstyles === "doublemenu" &&
+      theme.toggled !== "double-menu-open"
+    ) {
+      ThemeChanger({ ...theme, toggled: "double-menu-open" });
     }
-
   };
 
   return (
     <Fragment>
-         <div id="responsive-overlay" onClick={() => menuClose()}></div>
-      <aside className="app-sidebar sticky" id="sidebar" onMouseEnter={() => Onhover()}
-        onMouseLeave={() => Outhover()} >
-      <div className="main-sidebar-header">
-  <img src={logo1} alt="logo" className="desktop-logo" style={{ width: "25%" }} />
-  <span className='text-white ms-2 fs-16' style={{  fontWeight: 'bold', fontFamily: 'Arial, sans-serif' }}>राष्ट्रीय स्वास्थ्य मिशन</span>
-</div>
-
+      <div id="responsive-overlay" onClick={() => menuClose()}></div>
+      <aside
+        className="app-sidebar sticky"
+        id="sidebar"
+        onMouseEnter={() => Onhover()}
+        onMouseLeave={() => Outhover()}
+      >
+        <div className="main-sidebar-header">
+          <img
+            src={logo1}
+            alt="logo"
+            className="desktop-logo"
+            style={{ width: "25%" }}
+          />
+          <span
+            className="text-white ms-2 fs-16"
+            style={{ fontWeight: "bold", fontFamily: "Arial, sans-serif" }}
+          >
+            राष्ट्रीय स्वास्थ्य मिशन
+          </span>
+        </div>
 
         <div className="main-sidebar" id="sidebar-scroll">
-
           <RSC style={{ width: "100%", height: "100vh" }} noScrollX={false}>
             <nav className="main-menu-container nav nav-pills flex-column sub-open">
-
               <div className="slide-left" id="slide-left">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" onClick={() => { slideLeft(); }} width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7b8191"
+                  onClick={() => {
+                    slideLeft();
+                  }}
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  {" "}
+                  <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>{" "}
+                </svg>
               </div>
 
               <ul className="main-menu" style={{ marginRight: "0px" }}>
-
                 {MENUITEMS.map((levelone) => (
                   <Fragment key={Math.random()}>
-                    {levelone.menutitle ? <li className="slide__category">
-                      <span className='category-name'>
-                        {levelone.menutitle}
-                      </span>
-                    </li> : ""}
+                    {levelone.menutitle ? (
+                      <li className="slide__category">
+                        <span className="category-name">
+                          {levelone.menutitle}
+                        </span>
+                      </li>
+                    ) : (
+                      ""
+                    )}
                     {levelone.Items.map((leveltwo: any) =>
-                      leveltwo.type === "link" ?
-                        <li className={`slide ${leveltwo.active ? "active" : ''}`}
-                          key={Math.random()} >
-
-                          <Link ref={ulRef} onClick={(_event) => { setSidemenu(leveltwo); noChild(); }}
+                      leveltwo.type === "link" ? (
+                        <li
+                          className={`slide  ${
+                            leveltwo.active ? "active" : ""
+                          }`}
+                          key={Math.random()}
+                        >
+                          <Link
+                            ref={ulRef}
+                            onClick={(_event) => {
+                              setSidemenu(leveltwo);
+                              noChild();
+                            }}
                             to={leveltwo.path + "/"}
-                            className={`side-menu__item ${leveltwo.selected ? "active" : ""}`}>{leveltwo.icon} <span className="side-menu__label">
+                            className={`side-menu__item  ${
+                              leveltwo.selected ? "active" : ""
+                            }`}
+                          >
+                            {leveltwo.icon}{" "}
+                            <span className="side-menu__label">
                               {leveltwo.title}
                               {leveltwo.badgetxt ? (
                                 <span className={leveltwo.class}>
@@ -504,137 +601,237 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
                               ) : (
                                 ""
                               )}
-                            </span></Link>
+                            </span>
+                          </Link>
                         </li>
-                        : leveltwo.type === "sub" ?
-                          <li className={`slide has-sub ${leveltwo.active ? "open" : ''} ${leveltwo.selected ? "active" : ''} `}
-                            key={Math.random()} onClick={(event) => { MenuOpen(event); }}>
-                            <a href="#" className={`side-menu__item ${leveltwo.selected ? "active" : ""}`}
-                              onClick={(event) => { event.preventDefault(); toggleSidemenu(leveltwo); }}>
-                              {leveltwo.icon}
-                              <span className="side-menu__label">
-                                {leveltwo.title}
-                                {leveltwo.badgetxt ? (
-                                  <span className={leveltwo.class}>
-                                    {leveltwo.badgetxt}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </span>
-                              <i className="angle fe fe-chevron-right side-menu__angle"></i>
-                            </a>
-                            <ul ref={ulElement} className={`slide-menu child1 ${leveltwo.active ?
-                              "active" : ""
-                              } ${leveltwo.active && localStorage.ynexverticalstyles == 'doublemenu' ?
-                                "double-menu-active" : ""
-                              }
-              `} style={
-                                leveltwo.active
-                                  ? { display: "block" }
-                                  : { display: "none" }
-                              }>
-                              <li className="slide side-menu__label1">
-                                <a href="">{leveltwo.title}</a>
-                              </li>
+                      ) : leveltwo.type === "sub" ? (
+                        <li
+                          className={`slide has-sub ${
+                            leveltwo.active ? "open" : ""
+                          } ${leveltwo.selected ? "active" : ""} `}
+                          key={Math.random()}
+                          onClick={(event) => {
+                            MenuOpen(event);
+                          }}
+                        >
+                          <a
+                            href="#"
+                            className={`side-menu__item ${
+                              leveltwo.selected ? "active" : ""
+                            }`}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              toggleSidemenu(leveltwo);
+                            }}
+                          >
+                            {leveltwo.icon}
+                            <span className="side-menu__label">
+                              {leveltwo.title}
+                              {leveltwo.badgetxt ? (
+                                <span className={leveltwo.class}>
+                                  {leveltwo.badgetxt}
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </span>
+                            <i className="angle fe fe-chevron-right side-menu__angle"></i>
+                          </a>
+                          <ul
+                            ref={ulElement}
+                            className={`slide-menu child1 ${
+                              leveltwo.active ? "active" : ""
+                            } ${
+                              leveltwo.active &&
+                              localStorage.ynexverticalstyles == "doublemenu"
+                                ? "double-menu-active"
+                                : ""
+                            }`}
+                            style={
+                              leveltwo.active
+                                ? { display: "block" }
+                                : { display: "none" }
+                            }
+                          >
+                            <li className="slide side-menu__label1">
+                              <a href="">{leveltwo.title}</a>
+                            </li>
 
-                              {leveltwo.children?.map((thirdlayer: any) =>
-                                <Fragment key={Math.random()} >
-                                  {thirdlayer.type === "link" ?
-                                    <li className={`slide ${thirdlayer.active ? "active" : ''}`}>
-                                      {
-                                        thirdlayer.path == "/" ?
-                                          <Link to={"#"} className={`side-menu__item ${thirdlayer.selected ? "active" : ''}`}>
-                                            {thirdlayer.icon}
-                                            {thirdlayer.title}
-                                          </Link> :
-                                          <Link onClick={(_event) => { setSidemenu(thirdlayer); }} to={thirdlayer.path + "/"}
-                                            className={`side-menu__item ${thirdlayer.selected ? "active" : ''}`}>
-                                            {thirdlayer.icon}
-                                            {thirdlayer.title}
-                                            <span className={thirdlayer.class}>
-                                              {thirdlayer.badgetxt}
-                                            </span>
-                                          </Link>
+                            {leveltwo.children?.map((thirdlayer: any) => (
+                              <Fragment key={Math.random()}>
+                                {thirdlayer.type === "link" ? (
+                                  <li
+                                    className={`slide ${
+                                      thirdlayer.active ? "active" : ""
+                                    }`}
+                                  >
+                                    {thirdlayer.path == "/" ? (
+                                      <Link
+                                        to={"#"}
+                                        className={`side-menu__item ${
+                                          thirdlayer.selected ? "active" : ""
+                                        }`}
+                                      >
+                                        {thirdlayer.icon}
+                                        {thirdlayer.title}
+                                      </Link>
+                                    ) : (
+                                      <Link
+                                        onClick={(_event) => {
+                                          setSidemenu(thirdlayer);
+                                        }}
+                                        to={thirdlayer.path + "/"}
+                                        className={`side-menu__item ${
+                                          thirdlayer.selected ? "active" : ""
+                                        }`}
+                                      >
+                                        {thirdlayer.icon}
+                                        {thirdlayer.title}
+                                        <span className={thirdlayer.class}>
+                                          {thirdlayer.badgetxt}
+                                        </span>
+                                      </Link>
+                                    )}
+                                  </li>
+                                ) : thirdlayer.type === "sub" ? (
+                                  <li
+                                    className={`slide has-sub ${
+                                      thirdlayer.active ? "open" : ""
+                                    } ${thirdlayer.selected ? "active" : ""}`}
+                                  >
+                                    <a
+                                      href="#"
+                                      className={`side-menu__item ${
+                                        thirdlayer.selected ? "active" : ""
+                                      } `}
+                                      onClick={(evnt) => {
+                                        evnt.preventDefault();
+                                        toggleSidemenu(thirdlayer);
+                                        Clickhandelar();
+                                      }}
+                                    >
+                                      {thirdlayer.icon}{" "}
+                                      <span className="">
+                                        {thirdlayer.title}
+                                        {thirdlayer.badgetxt ? (
+                                          <span className={thirdlayer.class}>
+                                            {thirdlayer.badgetxt}
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </span>
+                                      <i className="fe fe-chevron-right side-menu__angle"></i>
+                                    </a>
+                                    <ul
+                                      className={`slide-menu child2 ${
+                                        thirdlayer.active ? "active" : ""
+                                      }`}
+                                      style={
+                                        thirdlayer.active
+                                          ? { display: "block" }
+                                          : { display: "none" }
                                       }
-                                    </li>
-                                    : thirdlayer.type === "sub" ?
-                                      <li className={`slide has-sub ${thirdlayer.active ? "open" : ''} ${thirdlayer.selected ? "active" : ''}`}>
-                                        <a href="#" className={`side-menu__item ${thirdlayer.selected ? "active" : ''} `} onClick={(evnt) => {
-                                          evnt.preventDefault();
-                                          toggleSidemenu(thirdlayer);
-                                          Clickhandelar();
-
-                                        }}>{thirdlayer.icon} <span className="">
-                                            {thirdlayer.title}
-                                            {thirdlayer.badgetxt ? (
-                                              <span className={thirdlayer.class}>
-                                                {thirdlayer.badgetxt}
-                                              </span>
+                                    >
+                                      {thirdlayer.children.map(
+                                        (fourthlayer: any) => (
+                                          <Fragment key={Math.random()}>
+                                            {fourthlayer.type === "link" ? (
+                                              <li
+                                                className={`slide ${
+                                                  fourthlayer.active
+                                                    ? "active"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <Link
+                                                  onClick={(_event) => {
+                                                    setSidemenu(fourthlayer);
+                                                  }}
+                                                  to={
+                                                    fourthlayer.path == "/"
+                                                      ? "#"
+                                                      : fourthlayer.path + "/"
+                                                  }
+                                                  className={`side-menu__item ${
+                                                    fourthlayer.selected
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                >
+                                                  {fourthlayer.icon}
+                                                  {fourthlayer.title}
+                                                </Link>
+                                              </li>
+                                            ) : fourthlayer.type === "sub" ? (
+                                              <li
+                                                className={`slide has-sub ${
+                                                  fourthlayer.active
+                                                    ? "open"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <a
+                                                  href="#"
+                                                  className="side-menu__item"
+                                                  onClick={(evnt) => {
+                                                    evnt.preventDefault();
+                                                    toggleSidemenu(fourthlayer);
+                                                  }}
+                                                >
+                                                  {fourthlayer.icon}{" "}
+                                                  <span className="">
+                                                    {fourthlayer.title}
+                                                  </span>
+                                                  <i className="ri ri-arrow-right-s-line side-menu__angle"></i>
+                                                </a>
+                                              </li>
                                             ) : (
                                               ""
                                             )}
-                                          </span>
-                                          <i className="fe fe-chevron-right side-menu__angle"></i>
-                                        </a>
-                                        <ul className={`slide-menu child2 ${thirdlayer.active ?
-                                          "active" : ""
-                                          }`} style={
-                                            thirdlayer.active
-                                              ? { display: "block" }
-                                              : { display: "none" }
-                                          }>
-                                          {thirdlayer.children.map((fourthlayer: any) =>
-                                            <Fragment key={Math.random()}>
-                                              {fourthlayer.type === "link" ?
-                                                <li className={`slide ${fourthlayer.active ? "active" : ''}`}>
-                                                  <Link onClick={(_event) => { setSidemenu(fourthlayer); }} to={fourthlayer.path == "/" ? "#" : fourthlayer.path + "/"} className={`side-menu__item ${fourthlayer.selected ? "active" : ''}`}>
-                                                    {fourthlayer.icon}
-                                                    {fourthlayer.title}
-                                                  </Link>
-
-                                                </li>
-                                                : fourthlayer.type === "sub" ? <li className={`slide has-sub ${fourthlayer.active ? "open" : ''}`}>
-
-                                                  <a href="#" className="side-menu__item" onClick={(evnt) => {
-                                                    evnt.preventDefault();
-                                                    toggleSidemenu(fourthlayer);
-
-                                                  }}>{fourthlayer.icon} <span className="">
-                                                      {fourthlayer.title}
-                                                    </span>
-                                                    <i className="ri ri-arrow-right-s-line side-menu__angle"></i>
-                                                  </a>
-                                                </li> : ""
-
-                                              }
-
-                                            </Fragment>)}
-
-                                        </ul>
-                                      </li> : ""
-                                  }
-                                </Fragment>
-                              )}
-                            </ul>
-                          </li> : '')
-
-                    }
+                                          </Fragment>
+                                        )
+                                      )}
+                                    </ul>
+                                  </li>
+                                ) : (
+                                  ""
+                                )}
+                              </Fragment>
+                            ))}
+                          </ul>
+                        </li>
+                      ) : (
+                        ""
+                      )
+                    )}
                   </Fragment>
-
                 ))}
               </ul>
 
-              <div className="slide-right" id="slide-right"><svg onClick={() => { slideRight(); }} xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>
+              <div className="slide-right" id="slide-right">
+                <svg
+                  onClick={() => {
+                    slideRight();
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7b8191"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  {" "}
+                  <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>{" "}
+                </svg>
+              </div>
             </nav>
           </RSC>
         </div>
       </aside>
-
     </Fragment>
   );
 };
 const mapStateToProps = (state: any) => ({
-  local_varaiable: state
+  local_varaiable: state,
 });
 export default connect(mapStateToProps, { ThemeChanger })(Sidebar);
