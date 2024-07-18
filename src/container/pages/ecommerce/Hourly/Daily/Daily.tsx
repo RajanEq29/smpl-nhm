@@ -1,13 +1,11 @@
-import React, { useState, ChangeEvent, useRef } from "react";
-import { Button, Card, Col, Nav, Row, Tab, Table } from "react-bootstrap";
-import { useInboundcallApiMutation } from "../../../../../redux/Admin";
+import { useState } from "react";
+import { Button, Card, Table } from "react-bootstrap";
+
 import { useForm } from "react-hook-form";
 import { axiosPost } from "../../../../../utils/ApiCall";
-import axios from "axios";
 
-type Props = {};
-
-const Daily = (props: Props) => {
+const Daily = () => {
+  //@ts-ignore
   const [rows, setRows] = useState<Row[]>([
     {
       id: 1,
@@ -34,7 +32,7 @@ const Daily = (props: Props) => {
   //     console.error("Error creating user:", error);
   //   }
   // };
-
+  //@ts-ignore
   const deleteLastRow = () => {
     if (rows.length > 1) {
       setRows(rows.slice(0, rows.length - 1));
@@ -59,12 +57,16 @@ const Daily = (props: Props) => {
   const [selectedImage, setSelectedImage] = useState(null);
   // const [responseMessage, setResponseMessage] = useState("");
   const [selectedImage1, setSelectedImage1] = useState(null);
-  const handleImageChange = (event) => {
+  const handleImageChange = (event: any) => {
     setSelectedImage(event.target.files[0]);
   };
-  const handleImageChange1 = (event) => {
+  console.log(selectedImage);
+
+  const handleImageChange1 = (event: any) => {
     setSelectedImage1(event.target.files[0]);
   };
+  console.log(selectedImage1);
+
   const { register, handleSubmit } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
@@ -73,26 +75,25 @@ const Daily = (props: Props) => {
         console.error("Please select an image.");
         return;
       }
-      if (!selectedImage) {
+      if (!selectedImage1) {
         console.error("Please select an image.");
         return;
       }
-      data.type = "monthly";
+      //@ts-ignore
+      data.type = "daily";
       console.log("ABAHAYA", data);
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
-      formData.append("image", selectedImage);
+      formData.append("graph", selectedImage);
+      formData.append("image", selectedImage1);
       // data.append();
 
-      const response = await axiosPost(
-        "callStatus/addCallStatus",
-        formData,
-        {}
-      );
+      const response = await axiosPost("callStatus/addCallStatus", formData);
 
       console.log("Response:", response.data);
     } catch (error) {
+      //@ts-ignore
       console.error("Error submitting form data:", error?.response?.data);
     }
   };
@@ -120,6 +121,7 @@ const Daily = (props: Props) => {
                 <th>Overall Abandoned</th>
                 <th>Answered %</th>
                 <th>ACHT</th>
+                <th></th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -130,51 +132,72 @@ const Daily = (props: Props) => {
                   <td>
                     <input
                       className="input-table-container"
+                      //@ts-ignore
                       name=" date"
                       type="date"
+                      //@ts-ignore
                       {...register("date")}
                       value={row.date}
-                      onChange={(e) => handleInputChange(index, e)}
+                      // onChange={(e) => handleInputChange(index, e)}
                     />
                   </td>
                   <td>
                     <input
                       className="input-table-container"
+                      //@ts-ignore
                       name="totalCalls"
                       type="text"
+                      //@ts-ignore
                       {...register("totalCalls")}
                       value={row.totalCalls}
-                      onChange={(e) => handleInputChange(index, e)}
+                      // onChange={(e) => handleInputChange(index, e)}
                     />
                   </td>
                   <td>
                     <input
                       className="input-table-container"
+                      //@ts-ignore
                       name="overAllAnswered"
                       type="text"
+                      //@ts-ignore
                       {...register("overAllAnswered")}
                       value={row.overAllAnswered}
-                      onChange={(e) => handleInputChange(index, e)}
+                      // onChange={(e) => handleInputChange(index, e)}
                     />
                   </td>
                   <td>
                     <input
                       className="input-table-container"
+                      //@ts-ignore
                       name="overAllAbandoned"
                       type="text"
+                      //@ts-ignore
                       {...register("overAllAbandoned")}
                       value={row.overAllAbandoned}
-                      onChange={(e) => handleInputChange(index, e)}
+                      // onChange={(e) => handleInputChange(index, e)}
                     />
                   </td>
                   <td>
                     <input
                       className="input-table-container"
+                      //@ts-ignore
                       name="answeredPercentage"
                       type="text"
+                      //@ts-ignore
                       {...register("answeredPercentage")}
                       value={row.answeredPercentage}
-                      onChange={(e) => handleInputChange(index, e)}
+                      // onChange={(e) => handleInputChange(index, e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      //@ts-ignore
+                      name="ACHT"
+                      type="text"
+                      //@ts-ignore
+                      {...register("ACHT")}
+                      value={row.ACHT}
                     />
                   </td>
                   <td className="d-flex gap-2">
@@ -193,9 +216,11 @@ const Daily = (props: Props) => {
                       accept="image/*"
                       onChange={handleImageChange1}
                       style={{ display: "none" }}
-                      id="upload-image-input"
+                      id="upload-image-input-img"
                     />
-                    <Button>Image</Button>
+                    <label htmlFor="upload-image-input-img">
+                      <Button as="span">Image</Button>
+                    </label>
                   </td>
                   <td className="">
                     <Button type="submit" className="mx-1">

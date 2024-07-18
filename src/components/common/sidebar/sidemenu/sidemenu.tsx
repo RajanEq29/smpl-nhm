@@ -35,7 +35,7 @@ export const MENUITEMS = [
         badge: "",
         class: "badge bg-warning-transparent ms-2",
         title: "Call Status-OutBound",
-        path: `${import.meta.env.BASE_URL}inboundcall`,
+        path: `${import.meta.env.BASE_URL}outboundcall`,
       },
       {
         icon: <i className="side-menu__icon bi bi-file-earmark-break mb-2"></i>,
@@ -81,7 +81,7 @@ export const MENUITEMS = [
 
         title: "Sample Call",
 
-        path: `${import.meta.env.BASE_URL}hourly-call`,
+        path: `${import.meta.env.BASE_URL}samplecall`,
       },
     ],
   },

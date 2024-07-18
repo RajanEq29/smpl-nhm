@@ -1,7 +1,8 @@
 /* eslint-disable linebreak-style */
+
 import { Card, Col, Nav, Row, Tab } from "react-bootstrap";
-import DistDAily from "./DistDaily";
-import DistMonths from "./DistMonths";
+import DailyData from "./DailyData";
+import MonthsData from "./MonthsData";
 
 interface Row {
   id: number;
@@ -15,7 +16,7 @@ interface Row {
   imageFile?: File;
 }
 
-export const Districtreport: React.FC = () => {
+export const Outboundcall: React.FC = () => {
   return (
     <>
       <Row className="justify-content-center ">
@@ -60,7 +61,7 @@ export const Districtreport: React.FC = () => {
                       tabIndex={0}
                     >
                       <div className="mx-2 my-2">
-                        <DistDAily />
+                        <DailyData />
                       </div>
                     </Tab.Pane>
                     <Tab.Pane
@@ -72,7 +73,7 @@ export const Districtreport: React.FC = () => {
                       tabIndex={0}
                     >
                       <div className="mx-2 my-2">
-                        <DistMonths />
+                        <MonthsData />
                       </div>
                     </Tab.Pane>
                   </Tab.Content>

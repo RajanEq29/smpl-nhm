@@ -16,7 +16,6 @@ import { LocalStorageBackup } from "../components/common/switcher/switcherdata/s
 import { ThemeChanger } from "../redux/action";
 import favicon from "../assets/images/brand-logos/favicon.ico";
 
-import axios from "axios";
 import { axiosPost } from "../utils/ApiCall";
 
 interface LoginProps {}
