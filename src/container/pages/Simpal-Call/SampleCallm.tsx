@@ -26,7 +26,7 @@ type FormData = {
   type: string;
 };
 
-const Samplecall = () => {
+const SampleCallm = () => {
   const [cards, setCards] = useState<FileData[]>([]);
   const { register, handleSubmit } = useForm<FormData>();
   const [showS, setShowS] = useState(false);
@@ -63,17 +63,17 @@ const Samplecall = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const selectedImage = cards.find((card) => card.file)?.file;
-      if (!selectedImage) {
+      const selectedImagem = cards.find((card) => card.file)?.file;
+      if (!selectedImagem) {
         console.error("Please select an image.");
         return;
       }
 
-      data.type = "daily";
+      data.type = "months";
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
-      formData.append("voiceCall", selectedImage);
+      formData.append("voiceCall", selectedImagem);
 
       const response = await axiosPost("callStatus/addSampleCall", formData);
 
@@ -149,7 +149,7 @@ const Samplecall = () => {
                                   <input
                                     //@ts-ignore
                                     name={`date-${card.id}`}
-                                    type="date"
+                                    type="month"
                                     {...register("date")}
                                     value={card.date || ""}
                                     onChange={(e) => {
@@ -164,7 +164,7 @@ const Samplecall = () => {
                                     </div>
 
                                     <label
-                                      htmlFor={`upload-image-input-img-${index}`}
+                                      htmlFor={`upload-image-input-img-m-${index}`}
                                     >
                                       <Button className="px-5-excel" as="span">
                                         Audio
@@ -177,7 +177,7 @@ const Samplecall = () => {
                                         handleImageChange(e, index)
                                       }
                                       style={{ display: "none" }}
-                                      id={`upload-image-input-img-${index}`}
+                                      id={`upload-image-input-img-m-${index}`}
                                     />
                                   </div>
                                 </div>
@@ -225,4 +225,4 @@ const Samplecall = () => {
   );
 };
 
-export default Samplecall;
+export default SampleCallm;

@@ -14,7 +14,8 @@ import { HourlyCall } from "./container/pages/ecommerce/Hourly/HourlyCall.tsx";
 import { Outboundcall } from "./container/pages/OutBoundcall/Outboundcall.tsx";
 import { Districtreport } from "./container/pages/DistrictCAll/Districtcall.tsx";
 import { Disposition } from "./container/pages/Disposition/Disposition.tsx";
-import Samplecall from "./container/pages/Simpal-Call/Samplecall.tsx";
+
+import { SampleCallui } from "./container/pages/Simpal-Call/SampleCallui.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -64,7 +65,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             />
             <Route
               path={`${import.meta.env.BASE_URL}samplecall`}
-              element={<Samplecall />}
+              element={<SampleCallui />}
             />
           </Route>
         </Routes>

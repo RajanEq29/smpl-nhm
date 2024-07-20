@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Button, Card, Table } from "react-bootstrap";
+import { Button, Card, Table, Toast, ToastContainer } from "react-bootstrap";
 
 import { useForm } from "react-hook-form";
 import { axiosPost } from "../../../../../utils/ApiCall";
+import { AxiosError } from "axios";
 
 const Months = () => {
+  const [show, setShow] = useState(false);
+  const [showS, setShowS] = useState(false);
+  const [err, setError] = useState("");
   //@ts-ignore
   const [rows, setRows] = useState<Row[]>([
     {
@@ -59,11 +63,13 @@ const Months = () => {
   const [graphImg, setGraphImg] = useState(null);
   const handleImage = (event: any) => {
     setImage(event.target.files[0]);
+    setShow(true);
   };
   console.log("hihisfd jksdf ", image);
 
   const handleImage1 = (event: any) => {
     setGraphImg(event.target.files[0]);
+    setShow(true);
   };
   console.log(graphImg);
   const { register, handleSubmit } = useForm<FormData>();
@@ -91,15 +97,51 @@ const Months = () => {
       const response = await axiosPost("callStatus/addCallStatus", formData);
 
       console.log("Response:", response.data);
+      setShowS(true);
       alert("Submit Data Success");
     } catch (error) {
       //@ts-ignore
-      console.error("Error submitting form data:", error?.response?.data);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          "Error submitting form data:",
+          error.response.data.message
+        );
+        setError("Same Data already exists!!");
+        setShow(true);
+      } else {
+        console.error("Unexpected error:", error);
+        setError("An unexpected error occurred. Please try again later.");
+        setShow(true);
+      }
     }
   };
 
   return (
     <>
+      <div>
+        {show && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto">Successfully Add </strong>
+              </Toast.Header>
+              <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
       <Card className="">
         <div className="d-flex justify-content-between px-4 py-2">
           <div className="d-flex gap-4"></div>
@@ -134,6 +176,7 @@ const Months = () => {
                       //@ts-ignore
                       name=" date"
                       type="month"
+                      required
                       //@ts-ignore
                       {...register("date")}
                       value={row.date}
@@ -146,6 +189,7 @@ const Months = () => {
                       //@ts-ignore
                       name="totalCalls"
                       type="text"
+                      required
                       //@ts-ignore
                       {...register("totalCalls")}
                       value={row.totalCalls}
@@ -158,6 +202,7 @@ const Months = () => {
                       //@ts-ignore
                       name="overAllAnswered"
                       type="text"
+                      required
                       //@ts-ignore
                       {...register("overAllAnswered")}
                       value={row.overAllAnswered}
@@ -170,6 +215,7 @@ const Months = () => {
                       //@ts-ignore
                       name="overAllAbandoned"
                       type="text"
+                      required
                       //@ts-ignore
                       {...register("overAllAbandoned")}
                       value={row.overAllAbandoned}
@@ -182,6 +228,7 @@ const Months = () => {
                       //@ts-ignore
                       name="answeredPercentage"
                       type="text"
+                      required
                       //@ts-ignore
                       {...register("answeredPercentage")}
                       value={row.answeredPercentage}
@@ -194,6 +241,7 @@ const Months = () => {
                       //@ts-ignore
                       name="ACHT"
                       type="text"
+                      required
                       //@ts-ignore
                       {...register("ACHT")}
                       value={row.ACHT}
@@ -239,6 +287,32 @@ const Months = () => {
           </Table>
         </form>
       </Card>
+      <div>
+        {showS && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShowS(false)}
+              show={showS}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto"></strong>
+              </Toast.Header>
+              <Toast.Body>
+                {err ? err : "Successfully Save Data In!!"}
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
     </>
   );
 };

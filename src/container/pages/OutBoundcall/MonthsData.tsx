@@ -1,8 +1,17 @@
 /* eslint-disable linebreak-style */
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Row, Tab } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Tab,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { axiosPost } from "../../../utils/ApiCall";
 import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 
 type FileData = {
   id: number;
@@ -17,6 +26,10 @@ type FormData = {
 };
 const MonthsData = () => {
   const [cards, setCards] = useState<FileData[]>([]);
+  const [showData, setShowData] = useState();
+  const [showS, setShowS] = useState(false);
+  const [err, setError] = useState("");
+  const [show, setShow] = useState(false);
 
   const AddNewCard = () => {
     const newCard: FileData = {
@@ -37,6 +50,9 @@ const MonthsData = () => {
 
   const handleImageChangem = (event: any) => {
     setSelectedImagem(event.target.files[0]);
+    //@ts-ignore
+    setShowData("Add Data Success.");
+    setShow(true);
   };
   console.log(selectedImagem);
 
@@ -66,14 +82,49 @@ const MonthsData = () => {
       );
 
       console.log("Response:", response?.data);
-      alert("Submit Data Success");
+      setShowS(true);
     } catch (error) {
       //@ts-ignore
-      console.error("Error submitting form data:", error?.response?.data);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          "Error submitting form data:",
+          error.response.data.message
+        );
+        setError("Same Data already exists!!");
+        setShow(true);
+      } else {
+        console.error("Unexpected error:", error);
+        setError("An unexpected error occurred. Please try again later.");
+        setShow(true);
+      }
     }
   };
   return (
     <>
+      <div>
+        {show && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto">Successfully Add </strong>
+              </Toast.Header>
+              <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
       <Row className="justify-content-center ">
         <Col>
           <div className="container-lg">
@@ -107,19 +158,15 @@ const MonthsData = () => {
                                   <div className=" my-2 ">
                                     <input
                                       //@ts-ignore
-                                      name=" date"
-                                      type="date"
+                                      name="date"
+                                      type="month"
                                       //@ts-ignore
                                       {...register("date")}
                                       //@ts-ignore
                                       value={card.date}
                                     ></input>
                                     <div className="d-flex justify-content-between">
-                                      <div>
-                                        {card.file && (
-                                          <p>Selected file: {card.file.name}</p>
-                                        )}
-                                      </div>
+                                      <div>{showData}</div>
                                     </div>
                                     <div className="d-flex justify-content-between">
                                       <div></div>
@@ -155,6 +202,32 @@ const MonthsData = () => {
           </div>
         </Col>
       </Row>
+      <div>
+        {showS && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShowS(false)}
+              show={showS}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto"></strong>
+              </Toast.Header>
+              <Toast.Body>
+                {err ? err : "Successfully Save Data In!!"}
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
     </>
   );
 };

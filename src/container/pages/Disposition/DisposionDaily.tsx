@@ -1,8 +1,17 @@
 /* eslint-disable linebreak-style */
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Col, Row, Tab } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Tab,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { axiosPost } from "../../../utils/ApiCall";
 import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 
 type FileData = {
   //@ts-ignore
@@ -15,6 +24,12 @@ const DispositionDaily = () => {
   const [cards, setCards] = useState<FileData[]>([]);
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const graphFileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [showData, setShowData] = useState();
+  const [showData1, setShowData1] = useState();
+  const [showData2, setShowData2] = useState();
+  const [showS, setShowS] = useState(false);
+  const [err, setError] = useState("");
+  const [show, setShow] = useState(false);
 
   const AddNewCard = () => {
     const newCard: FileData = {
@@ -33,6 +48,9 @@ const DispositionDaily = () => {
     if (fileInputRefs.current[index]) {
       //@ts-ignore
       fileInputRefs.current[index].click();
+      //@ts-ignore
+      setShowData("Addd Data Success");
+      setShow(true);
     }
   };
 
@@ -40,6 +58,7 @@ const DispositionDaily = () => {
     if (graphFileInputRefs.current[index]) {
       //@ts-ignore
       graphFileInputRefs.current[index].click();
+      setShow(true);
     }
   };
 
@@ -50,16 +69,25 @@ const DispositionDaily = () => {
   const [selectedImage1, setSelectedImage1] = useState(null);
   const handleImageChange = (event: any) => {
     setSelectedImage(event.target.files[0]);
+    //@ts-ignore
+    setShowData1("Addd Data Success Graph");
+    setShow(true);
   };
   console.log(selectedImage);
 
   const handleImageChange1 = (event: any) => {
     setSelectedImage1(event.target.files[0]);
+    //@ts-ignore
+    setShowData("Addd Data Success");
+    setShow(true);
   };
   console.log(selectedImage1);
   const [imageVoc, setImageVoc] = useState(null);
   const handleImageChangeVoc = (event: any) => {
     setImageVoc(event.target.files[0]);
+    //@ts-ignore
+    setShowData2("Addd Data Success VOc");
+    setShow(true);
   };
   console.log(imageVoc);
   // handleImageChangeVoc;
@@ -95,16 +123,51 @@ const DispositionDaily = () => {
         "callStatus/addDispositionReport",
         formData
       );
-      alert("Submit Data Success");
+
       console.log("Response:", response?.data);
-      alert("Submit Data Success");
+      setShowS(true);
     } catch (error) {
       //@ts-ignore
-      console.error("Error submitting form data:", error?.response?.data);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          "Error submitting form data:",
+          error.response.data.message
+        );
+        setError("Same Data already exists!!");
+        setShow(true);
+      } else {
+        console.error("Unexpected error:", error);
+        setError("An unexpected error occurred. Please try again later.");
+        setShow(true);
+      }
     }
   };
   return (
     <>
+      <div>
+        {show && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto">Successfully Add </strong>
+              </Toast.Header>
+              <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
       <Row className="justify-content-center ">
         <Col>
           <div className="container-lg">
@@ -146,11 +209,7 @@ const DispositionDaily = () => {
                                       value={card.date}
                                     ></input>
                                     <div className="d-flex justify-content-between">
-                                      <div>
-                                        {card.file && (
-                                          <p>Selected file: {card.file.name}</p>
-                                        )}
-                                      </div>
+                                      <div>{showData}</div>
                                       <label htmlFor="upload-image-input">
                                         <Button
                                           as="span"
@@ -173,7 +232,7 @@ const DispositionDaily = () => {
                                       />
                                     </div>
                                     <div className="d-flex justify-content-between">
-                                      <div></div>
+                                      <div>{showData1}</div>
                                       <label htmlFor="upload-image-input-img">
                                         <Button
                                           className="px-5-excel"
@@ -199,7 +258,7 @@ const DispositionDaily = () => {
                                       VOC
                                     </Row>
                                     <div className="d-flex justify-content-between m-2">
-                                      <p></p>
+                                      <p>{showData2}</p>
                                       <div>
                                         <label htmlFor="upload-image-input-img-voc">
                                           <Button
@@ -237,6 +296,32 @@ const DispositionDaily = () => {
           </div>
         </Col>
       </Row>
+      <div>
+        {showS && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShowS(false)}
+              show={showS}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto"></strong>
+              </Toast.Header>
+              <Toast.Body>
+                {err ? err : "Successfully Save Data In!!"}
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
     </>
   );
 };

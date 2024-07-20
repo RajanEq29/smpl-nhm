@@ -1,8 +1,17 @@
 /* eslint-disable linebreak-style */
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Col, Row, Tab } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Row,
+  Tab,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { axiosPost } from "../../../utils/ApiCall";
 import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 
 type FileData = {
   //@ts-ignore
@@ -10,17 +19,26 @@ type FileData = {
   file: File | null;
   graphFile: File | null;
 };
+type FormData = {
+  date: string;
+  type?: string;
+};
 
 const DistDAily = () => {
   const [cards, setCards] = useState<FileData[]>([]);
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const graphFileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [showS, setShowS] = useState(false);
+  const [err, setError] = useState("");
+  const [show, setShow] = useState(false);
 
   const AddNewCard = () => {
     const newCard: FileData = {
       id: cards.length + 1,
       file: null,
       graphFile: null,
+      //@ts-ignore
+      data: "",
     };
     setCards([...cards, newCard]);
   };
@@ -33,6 +51,7 @@ const DistDAily = () => {
     if (fileInputRefs.current[index]) {
       //@ts-ignore
       fileInputRefs.current[index]?.click();
+      setShow(true);
     }
   };
 
@@ -40,6 +59,7 @@ const DistDAily = () => {
     if (graphFileInputRefs.current[index]) {
       //@ts-ignore
       graphFileInputRefs.current[index]?.click();
+      setShow(true);
     }
   };
 
@@ -50,11 +70,13 @@ const DistDAily = () => {
   const [selectedImage1, setSelectedImage1] = useState(null);
   const handleImageChange = (event: any) => {
     setSelectedImage(event.target.files[0]);
+    setShow(true);
   };
   console.log(selectedImage);
 
   const handleImageChange1 = (event: any) => {
     setSelectedImage1(event.target.files[0]);
+    setShow(true);
   };
   console.log(selectedImage1);
 
@@ -85,15 +107,50 @@ const DistDAily = () => {
         "callStatus/addDistrictReport",
         formData
       );
-      alert("Submit Data Success");
+      setShowS(true);
       console.log("Response:", response?.data);
     } catch (error) {
       //@ts-ignore
-      console.error("Error submitting form data:", error?.response?.data);
+      if (error instanceof AxiosError && error.response) {
+        console.error(
+          "Error submitting form data:",
+          error.response.data.message
+        );
+        setError("Same Data already exists!!");
+        setShow(true);
+      } else {
+        console.error("Unexpected error:", error);
+        setError("An unexpected error occurred. Please try again later.");
+        setShow(true);
+      }
     }
   };
   return (
     <>
+      <div>
+        {show && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto">Successfully Add </strong>
+              </Toast.Header>
+              <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
       <Row className="justify-content-center ">
         <Col>
           <div className="container-lg">
@@ -197,6 +254,32 @@ const DistDAily = () => {
           </div>
         </Col>
       </Row>
+      <div>
+        {showS && (
+          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+            <Toast
+              onClose={() => setShowS(false)}
+              show={showS}
+              delay={5000}
+              autohide
+              bg="primary-transparent"
+              className="toast colored-toast"
+            >
+              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                {/* <img
+                  className="bd-placeholder-img rounded me-2"
+                  src={favicon}
+                  alt="..."
+                /> */}
+                <strong className="me-auto"></strong>
+              </Toast.Header>
+              <Toast.Body>
+                {err ? err : "Successfully Save Data In!!"}
+              </Toast.Body>
+            </Toast>
+          </ToastContainer>
+        )}
+      </div>
     </>
   );
 };
