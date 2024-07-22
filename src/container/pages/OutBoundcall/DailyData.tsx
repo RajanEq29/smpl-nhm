@@ -286,11 +286,11 @@ const DailyData = () => {
         <Row>
           <div>
             {dailyData?.data &&
-              dailyData?.data?.data?.map((card: any) => (
+              dailyData?.data?.data?.map((card: any, index: number) => (
                 <Card key={index} className="my-2 mx-4">
                   <div className="my-2 mx-4">
                     {card?.excel}
-                    {/* <div className="my-2">
+                    <div className="my-2">
                       <div className="d-flex justify-content-between">
                         <div className="pt-3">{card._id}</div>
                         <label>
@@ -299,7 +299,7 @@ const DailyData = () => {
                           </Button>
                         </label>
                       </div>
-                    </div> */}
+                    </div>
                   </div>
                   <Button type="submit">Save</Button>
                 </Card>
