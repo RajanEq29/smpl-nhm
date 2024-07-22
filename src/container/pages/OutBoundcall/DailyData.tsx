@@ -4,19 +4,14 @@ import {
   Button,
   Card,
   Col,
-  Form,
-  InputGroup,
   Row,
   Tab,
-  Table,
   Toast,
   ToastContainer,
 } from "react-bootstrap";
-import { axiosGet, axiosPost } from "../../../utils/ApiCall";
+import { axiosPost } from "../../../utils/ApiCall";
 import { useForm, Controller } from "react-hook-form";
 import { AxiosError } from "axios";
-import { formatDate } from "@fullcalendar/core/index.js";
-import DatePicker from "react-datepicker";
 
 type FileData = {
   id: number;
@@ -106,31 +101,31 @@ const DailyData = () => {
       }
     }
   };
-  const [startDate, setStartDate] = useState(new Date());
+  // const [startDate, setStartDate] = useState(new Date());
 
-  const [dailyData, setDailyData] = useState<any>(null);
-  const handleDateChange = (date: Date | null) => {
-    if (date) {
-      setStartDate(date);
-      fetchDailyData(date);
-    }
-  };
-  useEffect(() => {
-    fetchDailyData(startDate);
-  }, []);
-  const fetchDailyData = async (date: Date) => {
-    const formattedDate = formatDate(date);
-    try {
-      const response = await axiosGet(
-        `/callStatus/getDistrictReportByDate?date=${formattedDate}&type=daily`
-      );
-      console.log("dailly", response.data);
-      setDailyData(response.data);
-    } catch (error) {
-      console.error("Error fetching daily data:", error);
-    }
-  };
-  console.log("dailyData", dailyData?.data);
+  // const [dailyData, setDailyData] = useState<any>([]);
+  // const handleDateChange = (date: Date | null) => {
+  //   if (date) {
+  //     setStartDate(date);
+  //     fetchDailyData(date);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchDailyData(startDate);
+  // }, []);
+  // const fetchDailyData = async (date: Date) => {
+  //   const formattedDate = formatDate(date);
+  //   try {
+  //     const response = await axiosGet(
+  //       `/callStatus/getDistrictReportByDate?date=${formattedDate}&type=daily`
+  //     );
+  //     console.log("dailly", response.data);
+  //     setDailyData(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching daily data:", error);
+  //   }
+  // };
+  // console.log("dailyData", dailyData);
 
   return (
     <>
@@ -265,48 +260,6 @@ const DailyData = () => {
           )}
         </div>
       </Row>
-      <Card className="mx-2">
-        <Row className="mx-5 my-4">
-          <div className="d-flex justify-content-between ">
-            <div></div>
-            <div className="form-group mb-3">
-              <InputGroup className="">
-                <InputGroup.Text className="input-group-text text-muted">
-                  <i className="ri-calendar-line"></i>
-                </InputGroup.Text>
-                <DatePicker
-                  selected={startDate}
-                  onChange={handleDateChange}
-                  dateFormat="yyyy/MM/dd"
-                />
-              </InputGroup>
-            </div>
-          </div>
-        </Row>
-        <Row>
-          <div>
-            {dailyData?.data &&
-              dailyData?.data?.data?.map((card: any, index: number) => (
-                <Card key={index} className="my-2 mx-4">
-                  <div className="my-2 mx-4">
-                    {card?.excel}
-                    <div className="my-2">
-                      <div className="d-flex justify-content-between">
-                        <div className="pt-3">{card._id}</div>
-                        <label>
-                          <Button className="px-5-excel" as="span">
-                            Image
-                          </Button>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <Button type="submit">Save</Button>
-                </Card>
-              ))}
-          </div>
-        </Row>
-      </Card>
     </>
   );
 };
