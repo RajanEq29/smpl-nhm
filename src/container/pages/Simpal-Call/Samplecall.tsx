@@ -4,14 +4,18 @@ import {
   Button,
   Card,
   Col,
+  InputGroup,
   Row,
   Tab,
+  Table,
   Toast,
   ToastContainer,
 } from "react-bootstrap";
-import { axiosPost } from "../../../utils/ApiCall";
+import { axiosDelete, axiosGet, axiosPost } from "../../../utils/ApiCall";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
+import { formatDate } from "@fullcalendar/core/index.js";
+import DatePicker from "react-datepicker";
 
 type FileData = {
   id: number;
@@ -96,132 +100,246 @@ const Samplecall = () => {
     }
   };
 
+  const [startDate, setStartDate] = useState(new Date());
+  const [dailyData, setDailyData] = useState<any>([]);
+  console.log("Data:", dailyData);
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      setStartDate(date);
+      fetchDailyData(date);
+    }
+    console.log("Data-------------:", startDate);
+  };
+  useEffect(() => {
+    fetchDailyData(startDate);
+    deleteDailyData(deleteId);
+  }, []);
+  const fetchDailyData = async (date: Date) => {
+    const formattedDate = formatDate(date);
+    try {
+      const response = await axiosGet(
+        `callStatus/getSampleCallDailySelected?date=${formattedDate}`
+      );
+      console.log("dailly", response.data);
+      setDailyData(response.data);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
+  // delete api integration ??
+  const [deleteId, setDeleteId] = useState();
+  console.log("deleteId", deleteId);
+  const deleteDailyData = async (deleteId: any) => {
+    // console.log("deleteId", deleteId);
+    try {
+      const response = await axiosDelete(
+        `/callStatus/deleteSampleCallById/${deleteId}`
+      );
+      console.log("delete Data", response);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
+
   return (
-    <Row className="justify-content-center">
-      <div>
-        {show && (
-          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
-            <Toast
-              onClose={() => setShow(false)}
-              show={show}
-              delay={5000}
-              autohide
-              bg="primary-transparent"
-              className="toast colored-toast"
-            >
-              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
-                {/* <img
+    <>
+      <Row className="justify-content-center">
+        <div>
+          {show && (
+            <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+              <Toast
+                onClose={() => setShow(false)}
+                show={show}
+                delay={5000}
+                autohide
+                bg="primary-transparent"
+                className="toast colored-toast"
+              >
+                <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                  {/* <img
                   className="bd-placeholder-img rounded me-2"
                   src={favicon}
                   alt="..."
                 /> */}
-                <strong className="me-auto">Successfully Add </strong>
-              </Toast.Header>
-              <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
-            </Toast>
-          </ToastContainer>
-        )}
-      </div>
-      <Col>
-        <div className="container-lg">
-          <Tab.Container defaultActiveKey="one">
-            <Card>
-              <Card.Body className="p-0">
-                <Tab.Content id="myTabContent">
-                  <Tab.Pane eventKey="one" className="p-0 border-bottom-0">
-                    <div className="mx-2">
-                      <div className="d-flex justify-content-between px-4 py-2">
-                        <div className="d-flex gap-4"></div>
-                        <div>
-                          <h4>Call Status Sample</h4>
+                  <strong className="me-auto">Successfully Add </strong>
+                </Toast.Header>
+                <Toast.Body>{err ? err : "Successfully Add In!!"}</Toast.Body>
+              </Toast>
+            </ToastContainer>
+          )}
+        </div>
+        <Col>
+          <div className="container-lg">
+            <Tab.Container defaultActiveKey="one">
+              <Card>
+                <Card.Body className="p-0">
+                  <Tab.Content id="myTabContent">
+                    <Tab.Pane eventKey="one" className="p-0 border-bottom-0">
+                      <div className="mx-2">
+                        <div className="d-flex justify-content-between px-4 py-2">
+                          <div className="d-flex gap-4"></div>
+                          <div>
+                            <h4>Sample Call </h4>
+                          </div>
+                          <div>
+                            <Button onClick={AddNewCard}>+Add</Button>
+                          </div>
                         </div>
-                        <div>
-                          <Button onClick={AddNewCard}>+Add</Button>
-                        </div>
-                      </div>
 
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <div>
-                          {cards.map((card, index) => (
-                            <Card key={card.id} className="my-2 mx-4">
-                              <div className="my-2 mx-4">
-                                <div className="my-2">
-                                  <input
-                                    //@ts-ignore
-                                    name={`date-${card.id}`}
-                                    type="date"
-                                    {...register("date")}
-                                    value={card.date || ""}
-                                    onChange={(e) => {
-                                      const newCards = [...cards];
-                                      newCards[index].date = e.target.value;
-                                      setCards(newCards);
-                                    }}
-                                  />
-                                  <div className="d-flex justify-content-between">
-                                    <div className="pt-3">
-                                      {card.file && <p>Add on Audio </p>}
-                                    </div>
-
-                                    <label
-                                      htmlFor={`upload-image-input-img-${index}`}
-                                    >
-                                      <Button className="px-5-excel" as="span">
-                                        Audio
-                                      </Button>
-                                    </label>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                          <div>
+                            {cards.map((card, index) => (
+                              <Card key={card.id} className="my-2 mx-4">
+                                <div className="my-2 mx-4">
+                                  <div className="my-2">
                                     <input
-                                      type="file"
-                                      accept="audio/*"
-                                      onChange={(e) =>
-                                        handleImageChange(e, index)
-                                      }
-                                      style={{ display: "none" }}
-                                      id={`upload-image-input-img-${index}`}
+                                      //@ts-ignore
+                                      name={`date-${card.id}`}
+                                      type="date"
+                                      {...register("date")}
+                                      value={card.date || ""}
+                                      onChange={(e) => {
+                                        const newCards = [...cards];
+                                        newCards[index].date = e.target.value;
+                                        setCards(newCards);
+                                      }}
                                     />
+                                    <div className="d-flex justify-content-between">
+                                      <div className="pt-3">
+                                        {card.file && <p>Add on Audio </p>}
+                                      </div>
+
+                                      <label
+                                        htmlFor={`upload-image-input-img-${index}`}
+                                      >
+                                        <Button
+                                          className="px-5-excel"
+                                          as="span"
+                                        >
+                                          Audio
+                                        </Button>
+                                      </label>
+                                      <input
+                                        type="file"
+                                        accept="audio/*"
+                                        onChange={(e) =>
+                                          handleImageChange(e, index)
+                                        }
+                                        style={{ display: "none" }}
+                                        id={`upload-image-input-img-${index}`}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <Button type="submit">Save</Button>
-                            </Card>
-                          ))}
-                        </div>
-                      </form>
-                    </div>
-                  </Tab.Pane>
-                </Tab.Content>
-              </Card.Body>
-            </Card>
-          </Tab.Container>
-        </div>
-      </Col>
-      <div>
-        {showS && (
-          <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
-            <Toast
-              onClose={() => setShowS(false)}
-              show={showS}
-              delay={5000}
-              autohide
-              bg="primary-transparent"
-              className="toast colored-toast"
-            >
-              <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
-                {/* <img
+                                <Button type="submit">Save</Button>
+                              </Card>
+                            ))}
+                          </div>
+                        </form>
+                      </div>
+                    </Tab.Pane>
+                  </Tab.Content>
+                </Card.Body>
+              </Card>
+            </Tab.Container>
+          </div>
+        </Col>
+        <div>
+          {showS && (
+            <ToastContainer className="toast-container position-fixed top-0 end-0 me-4 mt-4">
+              <Toast
+                onClose={() => setShowS(false)}
+                show={showS}
+                delay={5000}
+                autohide
+                bg="primary-transparent"
+                className="toast colored-toast"
+              >
+                <Toast.Header className="toast-header bg-primary text-fixed-white mb-0">
+                  {/* <img
                   className="bd-placeholder-img rounded me-2"
                   src={favicon}
                   alt="..."
                 /> */}
-                <strong className="me-auto"></strong>
-              </Toast.Header>
-              <Toast.Body>
-                {err ? err : "Successfully Save Data In!!"}
-              </Toast.Body>
-            </Toast>
-          </ToastContainer>
-        )}
-      </div>
-    </Row>
+                  <strong className="me-auto"></strong>
+                </Toast.Header>
+                <Toast.Body>
+                  {err ? err : "Successfully Save Data In!!"}
+                </Toast.Body>
+              </Toast>
+            </ToastContainer>
+          )}
+        </div>
+      </Row>
+      <Col>
+        <Card>
+          <div className="d-flex justify-content-between m-2">
+            <div></div>
+            <div className="form-group mb-3">
+              <InputGroup className="">
+                <InputGroup.Text className="input-group-text text-muted">
+                  <i className="ri-calendar-line"></i>
+                </InputGroup.Text>
+                <DatePicker
+                  selected={startDate}
+                  onChange={handleDateChange}
+                  dateFormat="yyyy/MM"
+                />
+              </InputGroup>
+            </div>
+          </div>
+          <Row>
+            {dailyData?.data?.length > 0 ? (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <thead>
+                  <tr>
+                    <td>S ON</td>
+                    <td>Date</td>
+                    <td>VoiceCall</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyData.data.map((card: any, index: number) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{card.date}</td>
+                      <td>
+                        <a href={card.voiceCall}>Audio</a>
+                      </td>
+
+                      <td>
+                        <Button
+                          onClick={() => {
+                            setDeleteId(card._id);
+                            deleteDailyData(card._id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <tbody>
+                  <tr>
+                    <td className="text-center">No data available</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
+          </Row>
+        </Card>
+      </Col>
+    </>
   );
 };
 

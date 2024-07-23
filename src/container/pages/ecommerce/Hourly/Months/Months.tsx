@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 
 import { useForm } from "react-hook-form";
-import { axiosGet, axiosPost } from "../../../../../utils/ApiCall";
+import { axiosDelete, axiosGet, axiosPost } from "../../../../../utils/ApiCall";
 import { AxiosError } from "axios";
 import { formatDate } from "@fullcalendar/core/index.js";
 import DatePicker from "react-datepicker";
@@ -130,7 +130,7 @@ const Months = () => {
     const formattedDate = formatDate(date);
     try {
       const response = await axiosGet(
-        `callStatus/getAllMonthlyInBound?year=${formattedDate}`
+        `callStatus/getInBoundMonthlySelected?date=${formattedDate}`
       );
       console.log("dailly", response.data);
       setDailyData(response.data);
@@ -138,20 +138,20 @@ const Months = () => {
       console.error("Error fetching daily data:", error);
     }
   };
-  console.log("dailyData", dailyData.data);
+  console.log("dailyData22222222222222222", dailyData.data);
   // delet api ?
-  // const [deleteId, setDeleteId] = useState();
-  // console.log("deleteId", deleteId);
-  // const deleteDailyData = async (deleteId: any) => {
-  //   try {
-  //     const response = await axiosDelete(
-  //       `callStatus/deleteInBoundCall/${deleteId}`
-  //     );
-  //     console.log("delete Data", response);
-  //   } catch (error) {
-  //     console.error("Error fetching daily data:", error);
-  //   }
-  // };
+  const [deleteId, setDeleteId] = useState();
+  console.log("deleteId", deleteId);
+  const deleteDailyData = async (deleteId: any) => {
+    try {
+      const response = await axiosDelete(
+        `callStatus/deleteInBoundCall/${deleteId}`
+      );
+      console.log("delete Data", response);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
   return (
     <>
       <Col xxl={12}>
@@ -199,7 +199,7 @@ const Months = () => {
                     <th>TOTAL CALLS</th>
                     <th>Overall Answered</th>
                     <th>Overall Abandoned</th>
-                    <th>callAnswered</th>
+                    <th>Call Answered</th>
                     <th>Answered %</th>
                     <th>ACHT</th>
                     <th>Action</th>
@@ -395,45 +395,62 @@ const Months = () => {
         </Row>
         {}
         <Row>
-          <Table
-            bordered
-            className="table text-nowrap border-success border-round "
-          >
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Time Interval</th>
-                <th>TOTAL CALLS</th>
-                <th>Overall Answered</th>
-                <th>Overall Abandoned</th>
-                <th>Answered %</th>
-                <th>ACHT</th>
+          {dailyData?.data?.length > 0 ? (
+            <Table
+              bordered
+              className="table text-nowrap border-success border-round"
+            >
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Time Interval</th>
+                  <th>Agent Count</th>
+                  <th>Call Offered</th>
+                  <th>Overall Abandoned</th>
+                  <th>Call Answered</th>
+                  <th>Answered %</th>
+                  <th>ACHT</th>
 
-                <th>Action</th>
-              </tr>
-            </thead>
-            {dailyData &&
-              dailyData?.data?.map((card: any, index: number) => (
-                <tbody key={index}>
-                  <tr>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dailyData.data.map((card: any, index: number) => (
+                  <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{card.date}</td>
                     <td>{card.totalCalls}</td>
                     <td>{card.overAllAnswered}</td>
-                    <td>{card?.overAllAbandoned}</td>
-                    <td>{card?.answeredPercentage}</td>
-                    <td>{card?.ACHT}</td>
+                    <td>{card.overAllAbandoned}</td>
+                    <td>{card?.callAnswered}</td>
+                    <td>{card.answeredPercentage}</td>
+                    <td>{card.ACHT}</td>
                     <td>
                       <Button
-                      // onClick={() => deleteDailyData(setDeleteId(card?._id))}
+                        onClick={() => {
+                          setDeleteId(card._id);
+                          deleteDailyData(card._id);
+                        }}
                       >
                         Delete
                       </Button>
                     </td>
                   </tr>
-                </tbody>
-              ))}
-          </Table>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <Table
+              bordered
+              className="table text-nowrap border-success border-round"
+            >
+              <tbody>
+                <tr>
+                  <td className="text-center">No data available</td>
+                </tr>
+              </tbody>
+            </Table>
+          )}
         </Row>
       </Card>
     </>

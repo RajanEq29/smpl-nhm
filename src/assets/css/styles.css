@@ -35332,3 +35332,10 @@ input:focus {
   padding: 10px 100px;
 
 }
+.w-25-table {
+  width: 10px !important;
+
+  
+  border: 1px solid #ccc;
+
+}

@@ -4,14 +4,18 @@ import {
   Button,
   Card,
   Col,
+  InputGroup,
   Row,
   Tab,
+  Table,
   Toast,
   ToastContainer,
 } from "react-bootstrap";
-import { axiosPost } from "../../../utils/ApiCall";
+import { axiosDelete, axiosGet, axiosPost } from "../../../utils/ApiCall";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
+import { formatDate } from "@fullcalendar/core/index.js";
+import DatePicker from "react-datepicker";
 
 type FileData = {
   id: number;
@@ -96,7 +100,7 @@ const MonthsData = () => {
       }
 
       //@ts-ignore
-      data.type = "months";
+      data.type = "monthly";
       console.log("ABAHAYA", data);
 
       const formData = new FormData();
@@ -129,6 +133,46 @@ const MonthsData = () => {
         setError("An unexpected error occurred. Please try again later.");
         setShow(true);
       }
+    }
+  };
+  const [startDate, setStartDate] = useState(new Date());
+  const [dailyData, setDailyData] = useState<any>([]);
+  console.log("Data:", dailyData);
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      setStartDate(date);
+      fetchDailyData(date);
+    }
+    console.log("Data-------------:", startDate);
+  };
+  useEffect(() => {
+    fetchDailyData(startDate);
+    deleteDailyData(deleteId);
+  }, []);
+  const fetchDailyData = async (date: Date) => {
+    const formattedDate = formatDate(date);
+    try {
+      const response = await axiosGet(
+        `/callStatus/getDispositionReportMonthlySelected?date=${formattedDate}`
+      );
+      console.log("dailly", response.data);
+      setDailyData(response.data);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
+  // delete api integration ??
+  const [deleteId, setDeleteId] = useState();
+  console.log("deleteId", deleteId);
+  const deleteDailyData = async (deleteId: any) => {
+    // console.log("deleteId", deleteId);
+    try {
+      const response = await axiosDelete(
+        `callStatus/deleteDispositionById/${deleteId}`
+      );
+      console.log("delete Data", response);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
     }
   };
   return (
@@ -176,7 +220,7 @@ const MonthsData = () => {
                         <div className="d-flex justify-content-between px-4 py-2">
                           <div className="d-flex gap-4"></div>
                           <div>
-                            <h4>Call Status OutBound</h4>
+                            <h4>Disposition Report</h4>
                           </div>
                           <div>
                             <Button onClick={AddNewCard}>+Add</Button>
@@ -305,6 +349,92 @@ const MonthsData = () => {
           </ToastContainer>
         )}
       </div>
+      <Col>
+        <Card>
+          <div className="d-flex justify-content-between m-2">
+            <div></div>
+            <div className="form-group mb-3">
+              <InputGroup className="">
+                <InputGroup.Text className="input-group-text text-muted">
+                  <i className="ri-calendar-line"></i>
+                </InputGroup.Text>
+                <DatePicker
+                  selected={startDate}
+                  onChange={handleDateChange}
+                  dateFormat="yyyy/MM"
+                />
+              </InputGroup>
+            </div>
+          </div>
+          <Row>
+            {dailyData?.data?.length > 0 ? (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <thead>
+                  <tr>
+                    <th>S On</th>
+                    <th>S date</th>
+                    <th>S graph</th>
+                    <th>S table1</th>
+                    <th>S table2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyData.data.map((card: any, index: any) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{card.date}</td>
+                      <td>
+                        <a
+                          href={card.graph}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Graph
+                          {/* <img
+                            src={card.graph}
+                            alt="Graph"
+                            style={{ maxWidth: "100px", maxHeight: "100px" }}
+                          /> */}
+                        </a>
+                      </td>
+                      <td>
+                        <a href={card.table1}>Excel</a>
+                      </td>
+                      <td>
+                        <a href={card.table2}>Image</a>
+                      </td>
+                      <td>
+                        <Button
+                          onClick={() => {
+                            setDeleteId(card._id);
+                            deleteDailyData(card._id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <tbody>
+                  <tr>
+                    <td className="text-center">No data available</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
+          </Row>
+        </Card>
+      </Col>
     </>
   );
 };

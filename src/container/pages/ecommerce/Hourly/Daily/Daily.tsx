@@ -123,7 +123,7 @@ const Daily = () => {
     const formattedDate = formatDate(date);
     try {
       const response = await axiosGet(
-        `callStatus/getInBoundByMonth?date=${formattedDate}`
+        `callStatus/getInboundDailySelected?date=${formattedDate}`
       );
       // console.log("dailly", response.data);
       setDailyData(response.data);
@@ -134,7 +134,8 @@ const Daily = () => {
   // console.log("dailyData", dailyData.data);
   // delet data?
   const [deleteId, setDeleteId] = useState();
-  console.log("deleteId", deleteId);
+  console.log("Data-------------:", deleteId);
+
   const deleteDailyData = async (deleteId: any) => {
     try {
       const response = await axiosDelete(
@@ -191,7 +192,7 @@ const Daily = () => {
                 <th>Agent Count</th>
                 <th>Call Offered</th>
                 <th>Overall Abandoned</th>
-                <th>callAnswered</th>
+                <th>Call Answered</th>
                 <th>Answered %</th>
                 <th>ACHT</th>
                 <th></th>
@@ -394,7 +395,6 @@ const Daily = () => {
                     <th>Call Answered</th>
                     <th>Answered %</th>
                     <th>ACHT</th>
-
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -411,7 +411,10 @@ const Daily = () => {
                       <td>{card.ACHT}</td>
                       <td>
                         <Button
-                          onClick={() => deleteDailyData(setDeleteId(card._id))}
+                          onClick={() => {
+                            setDeleteId(card._id);
+                            deleteDailyData(card._id);
+                          }}
                         >
                           Delete
                         </Button>

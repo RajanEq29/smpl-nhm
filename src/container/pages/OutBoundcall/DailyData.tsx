@@ -4,14 +4,18 @@ import {
   Button,
   Card,
   Col,
+  InputGroup,
   Row,
   Tab,
+  Table,
   Toast,
   ToastContainer,
 } from "react-bootstrap";
-import { axiosPost } from "../../../utils/ApiCall";
+import { axiosDelete, axiosGet, axiosPost } from "../../../utils/ApiCall";
 import { useForm, Controller } from "react-hook-form";
 import { AxiosError } from "axios";
+import { formatDate } from "@fullcalendar/core/index.js";
+import DatePicker from "react-datepicker";
 
 type FileData = {
   id: number;
@@ -101,32 +105,48 @@ const DailyData = () => {
       }
     }
   };
-  // const [startDate, setStartDate] = useState(new Date());
 
-  // const [dailyData, setDailyData] = useState<any>([]);
-  // const handleDateChange = (date: Date | null) => {
-  //   if (date) {
-  //     setStartDate(date);
-  //     fetchDailyData(date);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchDailyData(startDate);
-  // }, []);
-  // const fetchDailyData = async (date: Date) => {
-  //   const formattedDate = formatDate(date);
-  //   try {
-  //     const response = await axiosGet(
-  //       `/callStatus/getDistrictReportByDate?date=${formattedDate}&type=daily`
-  //     );
-  //     console.log("dailly", response.data);
-  //     setDailyData(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching daily data:", error);
-  //   }
-  // };
-  // console.log("dailyData", dailyData);
-
+  // get datatata
+  const [startDate, setStartDate] = useState(new Date());
+  const [dailyData, setDailyData] = useState<any>([]);
+  console.log("Data:", dailyData);
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      setStartDate(date);
+      fetchDailyData(date);
+    }
+    console.log("Data-------------:", startDate);
+  };
+  useEffect(() => {
+    fetchDailyData(startDate);
+    deleteDailyData(deleteId);
+  }, []);
+  const fetchDailyData = async (date: Date) => {
+    const formattedDate = formatDate(date);
+    try {
+      const response = await axiosGet(
+        `callStatus/getOutboundDailySelected?date=${formattedDate}`
+      );
+      console.log("dailly", response.data);
+      setDailyData(response.data);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
+  // delete api integration ??
+  const [deleteId, setDeleteId] = useState();
+  console.log("deleteId", deleteId);
+  const deleteDailyData = async (deleteId: any) => {
+    // console.log("deleteId", deleteId);
+    try {
+      const response = await axiosDelete(
+        `callStatus/deleteOutBoundById/${deleteId}`
+      );
+      console.log("delete Data", response);
+    } catch (error) {
+      console.error("Error fetching daily data:", error);
+    }
+  };
   return (
     <>
       <Row className="justify-content-center">
@@ -260,6 +280,65 @@ const DailyData = () => {
           )}
         </div>
       </Row>
+      <Col>
+        <Card>
+          <div className="d-flex justify-content-between m-2">
+            <div></div>
+            <div className="form-group mb-3">
+              <InputGroup className="">
+                <InputGroup.Text className="input-group-text text-muted">
+                  <i className="ri-calendar-line"></i>
+                </InputGroup.Text>
+                <DatePicker
+                  selected={startDate}
+                  onChange={handleDateChange}
+                  dateFormat="yyyy/MM"
+                />
+              </InputGroup>
+            </div>
+          </div>
+          <Row>
+            {dailyData?.data?.length > 0 ? (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <tbody>
+                  {dailyData.data.map((card: any, index: number) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{card.date}</td>
+                      <td>{card.image}</td>
+
+                      <td>
+                        <Button
+                          onClick={() => {
+                            setDeleteId(card._id);
+                            deleteDailyData(card._id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <Table
+                bordered
+                className="table text-nowrap border-success border-round"
+              >
+                <tbody>
+                  <tr>
+                    <td className="text-center">No data available</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
+          </Row>
+        </Card>
+      </Col>
     </>
   );
 };
