@@ -180,10 +180,11 @@ const Daily = () => {
             <Button onClick={addRow}>+Add</Button>
           </div>
         </div>
+        <div className="">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Table
             bordered
-            className="table text-nowrap border-success border-round "
+            className="table  border-success border-round "
           >
             <thead>
               <tr>
@@ -195,6 +196,9 @@ const Daily = () => {
                 <th>Call Answered</th>
                 <th>Answered %</th>
                 <th>ACHT</th>
+                <th>Grievance 
+                </th>
+                <th>Query</th>
                 <th></th>
                 <th>Action</th>
               </tr>
@@ -295,6 +299,30 @@ const Daily = () => {
                       value={row.ACHT}
                     />
                   </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      //@ts-ignore
+                      name="ACHT"
+                      type="text"
+                      required
+                      //@ts-ignore
+                      {...register("grievance")}
+                      value={row.grievance}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input-table-container"
+                      //@ts-ignore
+                      name="ACHT"
+                      type="text"
+                      required
+                      //@ts-ignore
+                      {...register("query")}
+                      value={row.query}
+                    />
+                  </td>
                   <td className="d-flex gap-2">
                     <input
                       type="file"
@@ -303,6 +331,7 @@ const Daily = () => {
                       style={{ display: "none" }}
                       id="upload-image-input"
                     />
+                    
                     <label htmlFor="upload-image-input">
                       <Button as="span">Graph</Button>
                     </label>
@@ -334,6 +363,7 @@ const Daily = () => {
             </tbody>
           </Table>
         </form>
+        </div>
       </Card>
       <div>
         {showS && (
@@ -383,7 +413,7 @@ const Daily = () => {
             {dailyData?.data?.length > 0 ? (
               <Table
                 bordered
-                className="table text-nowrap border-success border-round"
+                className="table  border-success border-round"
               >
                 <thead>
                   <tr>
@@ -394,7 +424,10 @@ const Daily = () => {
                     <th>Overall Abandoned</th>
                     <th>Call Answered</th>
                     <th>Answered %</th>
+                   
                     <th>ACHT</th>
+                    <th>Grievance</th>
+                    <th>Query</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -409,6 +442,8 @@ const Daily = () => {
                       <td>{card?.callAnswered}</td>
                       <td>{card.answeredPercentage}</td>
                       <td>{card.ACHT}</td>
+                      <td>{card.grievance}</td>
+                      <td>{card.query}</td>
                       <td>
                         <Button
                           onClick={() => {

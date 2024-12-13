@@ -190,7 +190,7 @@ const Months = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <Table
                 bordered
-                className="table text-nowrap border-success border-round"
+                className="table  border-success border-round"
               >
                 <thead>
                   <tr>
@@ -201,7 +201,11 @@ const Months = () => {
                     <th>Overall Abandoned</th>
                     <th>Call Answered</th>
                     <th>Answered %</th>
+                    
                     <th>ACHT</th>
+                    <th>Grievance </th>
+                <th>Query</th>
+                    <th></th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -297,6 +301,30 @@ const Months = () => {
                           //@ts-ignore
                           {...register("ACHT")}
                           value={row.ACHT}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="input-table-container"
+                          //@ts-ignore
+                          name="ACHT"
+                          type="text"
+                          required
+                          //@ts-ignore
+                          {...register("grievance")}
+                          value={row.grievance}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="input-table-container"
+                          //@ts-ignore
+                          name="ACHT"
+                          type="text"
+                          required
+                          //@ts-ignore
+                          {...register("query")}
+                          value={row.query}
                         />
                       </td>
                       <td className="d-flex gap-2">
@@ -409,8 +437,11 @@ const Months = () => {
                   <th>Overall Abandoned</th>
                   <th>Call Answered</th>
                   <th>Answered %</th>
+                
                   <th>ACHT</th>
-
+                  <th>Grievance 
+                </th>
+                <th>Query</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -424,7 +455,10 @@ const Months = () => {
                     <td>{card.overAllAbandoned}</td>
                     <td>{card?.callAnswered}</td>
                     <td>{card.answeredPercentage}</td>
+                    
                     <td>{card.ACHT}</td>
+                    <td>{}</td>
+                    <td>{}</td>
                     <td>
                       <Button
                         onClick={() => {
