@@ -84,7 +84,7 @@ const Months = () => {
       }
       //@ts-ignore
       data.type = "monthly";
-      console.log("ABAHAYA", data);
+ 
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
@@ -457,8 +457,8 @@ const Months = () => {
                     <td>{card.answeredPercentage}</td>
                     
                     <td>{card.ACHT}</td>
-                    <td>{}</td>
-                    <td>{}</td>
+                    <td>{card.grievance}</td>
+                    <td>{card.query}</td>
                     <td>
                       <Button
                         onClick={() => {
