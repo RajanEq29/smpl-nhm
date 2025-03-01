@@ -16,6 +16,8 @@ import { Districtreport } from "./container/pages/DistrictCAll/Districtcall.tsx"
 import { Disposition } from "./container/pages/Disposition/Disposition.tsx";
 
 import { SampleCallui } from "./container/pages/Simpal-Call/SampleCallui.tsx";
+import { Appointment } from "./container/pages/Appointment/Appointment.tsx";
+import { Satisfaction } from "./container/pages/Satifaction/Satifaction.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -66,6 +68,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route
               path={`${import.meta.env.BASE_URL}samplecall`}
               element={<SampleCallui />}
+            />
+            <Route
+              path={`${import.meta.env.BASE_URL}appointment`}
+              element={<Appointment/>}
+            />
+             <Route
+              path={`${import.meta.env.BASE_URL}satisfaction`}
+              element={<Satisfaction/>}
             />
           </Route>
         </Routes>

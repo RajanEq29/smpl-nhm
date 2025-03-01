@@ -69,7 +69,7 @@ export const MENUITEMS = [
       },
 
       {
-        icon: <i className="side-menu__icon bi bi-telephone-outbound mb-2"></i>,
+        icon: <i className="side-menu__icon bi bi-telephone-outbound "></i>,
         type: "link",
         Name: "",
         active: false,
@@ -82,6 +82,36 @@ export const MENUITEMS = [
         title: "Sample Call",
 
         path: `${import.meta.env.BASE_URL}samplecall`,
+      },
+      {
+        icon: <i className="bi bi-asterisk mb-2 side-menu__icon "></i>,
+        type: "link",
+        Name: "",
+        active: false,
+        selected: false,
+
+        badge: "",
+        // badgetxt: "12",
+        class: "badge bg-warning-transparent ms-2",
+
+        title: "Appointment Status",
+
+        path: `${import.meta.env.BASE_URL}appointment`,
+      },
+      {
+        icon: <i className="side-menu__icon bi bi-file-earmark-text mb-2"></i>,
+        type: "link",
+        Name: "",
+        active: false,
+        selected: false,
+
+        badge: "",
+        // badgetxt: "12",
+        class: "badge bg-warning-transparent ms-2",
+
+        title: "Satisfaction status",
+
+        path: `${import.meta.env.BASE_URL}satisfaction`,
       },
     ],
   },
